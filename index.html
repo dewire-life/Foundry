@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Foundry">
+<meta name="theme-color" content="#000000">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" href="icons/icon-192.png">
+<title>Foundry</title>
+<link rel="stylesheet" href="style.css">
+<div class="welcome-overlay" id="welcomeOverlay">
+  <div class="welcome-inner">
+    <img class="welcome-logo" src="icons/logo.png" alt="Foundry">
+    <div class="welcome-tag">Train. Track. Progress.</div>
+    <div class="welcome-form" id="welcomeForm">
+      <input type="email" id="wEmail" placeholder="Email" autocomplete="email">
+      <input type="password" id="wPassword" placeholder="Password" autocomplete="current-password">
+      <div class="welcome-msg" id="welcomeMsg"></div>
+      <button class="w-primary" id="wSignIn">Sign In</button>
+      <button class="w-secondary" id="wSignUp">Create Account</button>
+      <button class="w-link" id="wForgot">Forgot password?</button>
+      <button class="w-link" id="wSkip">Skip for now, keep data on this device</button>
+    </div>
+  </div>
+</div>
+
+<div class="welcome-overlay" id="recoveryOverlay">
+  <div class="welcome-inner">
+    <div class="welcome-brand">New Password</div>
+    <div class="welcome-tag">Choose a new password for your account.</div>
+    <div class="welcome-form">
+      <input type="password" id="recoveryPassword" placeholder="New password" autocomplete="new-password">
+      <div class="welcome-msg" id="recoveryMsg"></div>
+      <button class="w-primary" id="recoverySave">Set Password</button>
+    </div>
+  </div>
+</div>
+
+<div class="welcome-overlay" id="onboardOverlay">
+  <div class="welcome-inner onboard-inner">
+    <div class="welcome-brand" style="font-size:24px;">Set up your training</div>
+    <div class="welcome-tag">Under a minute. Everything can be changed later in Settings.</div>
+
+    <div class="ob-field">
+      <label>First name</label>
+      <input type="text" id="obFirstName" placeholder="So we can cheer you on" maxlength="20" autocomplete="given-name">
+    </div>
+    <div class="ob-field">
+      <label>Name on the friends board</label>
+      <input type="text" id="obDisplayName" placeholder="What friends will see" maxlength="24">
+    </div>
+    <div class="ob-field">
+      <label>Share stats with friends?</label>
+      <div class="ob-seg" id="obShare">
+        <button data-v="yes">Yes</button><button data-v="no" class="on">Not yet</button>
+      </div>
+    </div>
+    <div class="ob-field">
+      <label>Which days will you train?</label>
+      <div class="day-chips" id="obDayChips">
+        <button type="button" class="day-chip" data-d="0">S</button>
+        <button type="button" class="day-chip on" data-d="1">M</button>
+        <button type="button" class="day-chip" data-d="2">T</button>
+        <button type="button" class="day-chip on" data-d="3">W</button>
+        <button type="button" class="day-chip" data-d="4">T</button>
+        <button type="button" class="day-chip on" data-d="5">F</button>
+        <button type="button" class="day-chip" data-d="6">S</button>
+      </div>
+      <div class="day-chips-hint">Sets your plan, your calendar, and your streak. Rest days never break it.</div>
+    </div>
+    <div class="ob-field">
+      <label>Main goal</label>
+      <div class="ob-seg" id="obGoal">
+        <button data-v="muscle" class="on">Build muscle</button><button data-v="fatloss">Lose fat</button><button data-v="general">Fitness</button>
+      </div>
+    </div>
+    <div class="ob-field">
+      <label>Equipment</label>
+      <div class="ob-seg" id="obEquip">
+        <button data-v="dumbbells" class="on">Dumbbells</button><button data-v="bodyweight">Bodyweight only</button>
+      </div>
+    </div>
+    <button class="w-primary" id="obFinish">Start Training</button>
+  </div>
+</div>
+
+<div class="welcome-overlay" id="tourOverlay">
+  <div class="welcome-inner tour-inner">
+    <div class="tour-slide" id="tourSlide"></div>
+    <div class="tour-dots" id="tourDots"></div>
+    <div class="tour-actions">
+      <button class="w-secondary" id="tourBack" style="margin-bottom:0;">Back</button>
+      <button class="w-primary" id="tourNext" style="margin-bottom:0;">Next</button>
+    </div>
+    <button class="w-link" id="tourSkip">Skip the tour</button>
+  </div>
+</div>
+
+<div class="guided-overlay" id="warmupOverlay">
+  <button class="guided-close" id="warmupClose" aria-label="Exit warm-up">&times;</button>
+  <div class="guided-body" id="warmupBody"></div>
+</div>
+
+<div class="guided-overlay" id="guidedOverlay">
+  <button class="guided-close" id="guidedClose" aria-label="Exit guided workout">&times;</button>
+  <div class="guided-body" id="guidedBody"></div>
+</div>
+
+<div class="summary-overlay" id="recapOverlay">
+  <div class="summary-card recap-card">
+    <div class="recap-body" id="recapBody"></div>
+    <canvas id="recapCanvas" width="1080" height="1350" style="display:none;"></canvas>
+    <div class="recap-actions">
+      <button class="w-secondary" id="recapShare" style="margin-bottom:0;">Share</button>
+      <button class="finish" id="recapDone" style="margin:0;">Done</button>
+    </div>
+  </div>
+</div>
+
+<div class="summary-overlay" id="summaryOverlay">
+  <div class="summary-card">
+    <div class="summary-body"></div>
+    <button class="finish" id="summaryDone">Done</button>
+  </div>
+</div>
+
+<script src="chart.umd.min.js"></script>
+</head>
+<body>
+
+<div class="lock-screen" id="lockScreen" style="display:none;">
+  <h2>Foundry Locked</h2>
+  <div class="lock-error" id="lockError"></div>
+  <input type="password" inputmode="numeric" id="lockInput" maxlength="8" placeholder="•••••">
+  <button id="lockUnlock">Unlock</button>
+</div>
+
+<header>
+  <h1 id="planTitle">Foundry</h1>
+  <div class="sub" id="planSub">dumbbells + bench</div>
+
+  <div class="rings-row">
+    <svg class="rings-svg" viewBox="0 0 100 100">
+      <circle class="ring-track" cx="50" cy="50" r="42" style="stroke:var(--card-2)"></circle>
+      <circle class="ring-track" cx="50" cy="50" r="30" style="stroke:var(--card-2)"></circle>
+      <circle class="ring-track" cx="50" cy="50" r="18" style="stroke:var(--card-2)"></circle>
+      <circle class="ring-fill" id="ringVolume" cx="50" cy="50" r="42" style="stroke:var(--accent)" transform="rotate(-90 50 50)"></circle>
+      <circle class="ring-fill" id="ringSessions" cx="50" cy="50" r="30" style="stroke:var(--good)" transform="rotate(-90 50 50)"></circle>
+      <circle class="ring-fill" id="ringStreak" cx="50" cy="50" r="18" style="stroke:var(--blue)" transform="rotate(-90 50 50)"></circle>
+    </svg>
+    <div class="ring-legend">
+      <div class="ring-legend-item"><span class="ring-legend-dot" style="background:var(--accent)"></span>Volume<b id="ringVolumeLabel" style="margin-left:auto"></b></div>
+      <div class="ring-legend-item"><span class="ring-legend-dot" style="background:var(--good)"></span>Sessions<b id="ringSessionsLabel" style="margin-left:auto"></b></div>
+      <div class="ring-legend-item"><span class="ring-legend-dot" style="background:var(--blue)"></span>Streak<b id="ringStreakLabel" style="margin-left:auto"></b></div>
+    </div>
+  </div>
+
+  <div class="header-quote" id="headerQuote"></div>
+</header>
+
+<div class="viewtabs-bar">
+<div class="viewtabs">
+  <div class="viewtab active" data-view="log">Log</div>
+  <div class="viewtab" data-view="cardio">Cardio</div>
+  <div class="viewtab" data-view="progress">Progress</div>
+  <div class="viewtab" data-view="body">Body</div>
+  <div class="viewtab" data-view="settings">Settings</div>
+</div>
+</div>
+
+<div id="logView">
+  <div id="prBanner"></div>
+  <div class="program-strip" id="programStrip" style="display:none;">
+    <span class="program-chip" id="programChip"></span>
+  </div>
+  <div class="daytabs" id="daytabs"></div>
+  <div class="program-note" id="programNote" style="display:none;"></div>
+  <button class="warmup-launch" id="warmupLaunchBtn">Guided Warm-Up &middot; <span id="warmupMins" class="num">4</span> min</button>
+  <div class="session-timer" id="sessionTimer">
+    <div>
+      <div class="st-time num" id="stTime">00:00</div>
+      <div class="st-target" id="stTarget"></div>
+    </div>
+    <button id="guidedStartBtn" class="guided-btn">Guided</button>
+      <button id="stToggle">Start</button>
+  </div>
+  <div class="circuit-toggle">
+    <span class="label">Circuit mode, one shared rest per round</span>
+    <div class="toggle" id="circuitToggle"><div class="knob"></div></div>
+  </div>
+  <main><div class="card" id="dayCard"></div></main>
+  <div class="hist">
+    <h2>Recent Sessions</h2>
+    <div id="histList"></div>
+  </div>
+</div>
+
+<div id="cardioView" style="display:none;">
+  <div class="card" style="margin:12px 20px 14px;">
+    <select id="cardioActivity"></select>
+    <input type="text" id="cardioCustomName" placeholder="Activity name" style="display:none;">
+    <button class="row-tools-solo" id="cardioInfoBtn" type="button">Technique Tip</button>
+    <div class="info-panel" id="cardioInfoPanel"></div>
+    <div class="cardio-row">
+      <input type="number" step="0.5" id="cardioMinutes" placeholder="Minutes">
+      <input type="number" step="1" id="cardioDistance" placeholder="Distance, m (optional)">
+    </div>
+    <div class="cardio-row">
+      <input type="number" step="1" id="cardioCalories" placeholder="Calories (optional)">
+      <select id="cardioRpe">
+        <option value="">RPE (optional)</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+      </select>
+    </div>
+    <textarea class="note-field" id="cardioNotes" placeholder="Notes"></textarea>
+    <button class="finish" id="cardioSave">Log Conditioning Session</button>
+  </div>
+  <div class="chart-block" style="margin-top:16px;">
+    <h3 class="section-h">Performance</h3>
+    <div id="cardioPerf" class="cardio-perf"></div>
+    <div class="chart-wrap" id="cardioPaceWrap" style="display:none;"><canvas id="cardioPaceChart" height="150"></canvas></div>
+  </div>
+  <div class="hist">
+    <h2>Recent Conditioning</h2>
+    <div id="cardioHistList"></div>
+  </div>
+</div>
+
+<div id="progressView" style="display:none;">
+  <div id="deloadBanner"></div>
+
+  <div class="stat-strip" id="progressStats"></div>
+
+  <div class="insights-wrap">
+    <h3 class="section-h">Insights</h3>
+    <div id="insightsList"></div>
+  </div>
+
+  <div class="recap-btn-wrap">
+    <button class="row-tools-solo" id="recapOpenBtn" style="width:100%;">Last Week's Recap</button>
+  </div>
+
+  <div class="friends-wrap" id="friendsWrap" style="display:none;">
+    <h3 class="section-h">Friends This Week</h3>
+    <div id="friendsBoard"></div>
+  </div>
+
+  <div class="chart-block">
+    <h3>This Week</h3>
+    <div class="stat-strip" id="weekSummary" style="margin-bottom:0;"></div>
+  </div>
+
+  <div class="chart-block">
+    <h3>Conditioning</h3>
+    <div class="stat-strip" id="cardioStats"></div>
+    <div id="cardioBreakdown"></div>
+  </div>
+
+  <div class="goal-bar-wrap">
+    <h3 class="section-h">Weekly Volume Goal</h3>
+    <div class="goal-bar-track"><div class="goal-bar-fill" id="goalFill"></div></div>
+    <div class="goal-label" id="goalLabel"></div>
+  </div>
+
+  <div class="calendar-wrap">
+    <h3 class="section-h">Workout Calendar</h3>
+    <div class="cal-nav">
+      <button id="calPrev">&lt;</button>
+      <span class="label" id="calLabel"></span>
+      <button id="calNext">&gt;</button>
+    </div>
+    <div class="calendar-grid" id="calGrid"></div>
+  </div>
+
+  <div class="recovery-list">
+    <h3 class="section-h">Muscle Recovery</h3>
+    <div id="recoveryList"></div>
+  </div>
+
+  <div class="badges-wrap" id="badgesList"></div>
+
+  <div class="tm-block">
+    <h3 class="section-h">Training Max Calculator</h3>
+    <select id="tmSelect"></select>
+    <div class="tm-result" id="tmResult"></div>
+  </div>
+
+  <div class="chart-block">
+    <h3>Weekly Volume, Last 12 Weeks</h3>
+    <div class="chart-wrap"><canvas id="weeklyChart" height="160"></canvas></div>
+  </div>
+
+  <div class="chart-block">
+    <h3>Muscle Split, Last 30 Days</h3>
+    <div class="chart-wrap"><canvas id="muscleChart" height="170"></canvas></div>
+  </div>
+
+  <div class="spm-wrap">
+    <h3 class="section-h">Hard Sets Per Muscle, This Week</h3>
+    <div id="setsPerMuscle"></div>
+  </div>
+
+  <div class="pr-timeline-wrap">
+    <h3 class="section-h">Recent PRs</h3>
+    <div id="prTimeline"></div>
+  </div>
+
+  <div class="chart-block">
+    <h3>Total Volume Per Session</h3>
+    <div class="chart-wrap"><canvas id="volumeChart" height="160"></canvas></div>
+  </div>
+
+  <div class="chart-block">
+    <h3>Estimated 1-Rep Max Trend</h3>
+    <input class="search-input" id="exSearch" placeholder="Search exercise">
+    <select id="exSelect"></select>
+    <div class="chart-wrap"><canvas id="e1rmChart" height="160"></canvas></div>
+  </div>
+
+</div>
+
+
+<div id="bodyView" style="display:none;">
+  <div class="chart-block" style="margin-top:16px;">
+    <h3>Bodyweight</h3>
+    <div class="bw-form">
+      <input type="number" step="0.1" id="bwInput" placeholder="kg today">
+      <button id="bwAdd">Log</button>
+    </div>
+    <div class="bw-trend-stat" id="bwTrendStat"></div>
+    <div class="chart-wrap"><canvas id="bwChart" height="160"></canvas></div>
+    <div class="bw-legend">
+      <span><span class="bw-legend-dot bw-legend-trend"></span>Trend</span>
+      <span><span class="bw-legend-dot bw-legend-daily"></span>Daily entry</span>
+    </div>
+  </div>
+
+  <div class="chart-block">
+    <h3>Body Measurements</h3>
+    <div class="measure-card">
+      <button class="row-tools-solo" id="measureToggleForm" type="button" style="width:100%; margin-bottom:0;">Log Measurements</button>
+      <div class="measure-form" id="measureForm">
+        <input type="date" id="measureDate" class="measure-date">
+        <div class="measure-grid" id="measureGrid"></div>
+        <div class="measure-hint">Fill in what you measured, in cm. Leave the rest blank.</div>
+        <button class="finish" id="measureSave">Save Measurements</button>
+      </div>
+    </div>
+    <div class="measure-snapshot" id="measureSnapshot"></div>
+  </div>
+
+  <div class="chart-block">
+    <h3>Measurement Trend</h3>
+    <select id="measureSelect"></select>
+    <div class="chart-wrap"><canvas id="measureChart" height="160"></canvas></div>
+  </div>
+
+  
+</div>
+
+<div id="settingsView" style="display:none;">
+  <div class="settings-block">
+    <h3 class="section-h mt16">Training Schedule</h3>
+    <div class="schedule-when">
+      <label class="schedule-label">When do you train?</label>
+      <div class="day-chips" id="trainingDayChips"></div>
+      <div class="day-chips-hint">Drives your plan, calendar, and streak. Rest days never break the streak.</div>
+    </div>
+    <label class="schedule-label" style="margin-top:14px; display:block;">What do you follow?</label>
+    <div id="planOptions"></div>
+    <div class="plan-cycle-hint" id="planCycleHint" style="display:none;"></div>
+    <button class="add-exercise-btn" id="builderOpenBtn" type="button">+ Create Custom Plan</button>
+    <div class="plan-builder" id="planBuilder"></div>
+
+    <h3 class="section-h mt16">Program Block</h3>
+    <div class="program-card">
+      <div class="program-status" id="programStatus"></div>
+      <div class="field-row">
+        <label>Block length, weeks</label>
+        <select id="programWeeksSelect" class="goal-focus-select">
+          <option value="3">3</option><option value="4" selected>4</option>
+          <option value="5">5</option><option value="6">6</option>
+        </select>
+      </div>
+      <div class="field-row">
+        <label>Deload on final week</label>
+        <div class="toggle on" id="programDeloadToggle"><div class="knob"></div></div>
+      </div>
+      <button class="finish" id="programStartBtn">Start Block This Week</button>
+      <button class="row-tools-solo" id="programStopBtn" style="width:100%; display:none;">End Program</button>
+    </div>
+  </div>
+  <div class="settings-block">
+    <h3 class="section-h">Preferences</h3>
+    <button class="row-tools-solo" id="tourOpenBtn" style="width:100%; margin-bottom:10px;">How Foundry Works</button>
+    <div class="field-row">
+      <label>Units</label>
+      <select id="unitsSelect" class="goal-focus-select">
+        <option value="kg">kg</option>
+        <option value="lb">lb</option>
+      </select>
+    </div>
+    <div class="field-row">
+      <label>Display name, for the friends board</label>
+      <input type="text" id="displayNameInput" class="field-num" style="width:130px; text-align:right;" placeholder="Name">
+    </div>
+    <div class="field-row">
+      <label>Share stats with friends</label>
+      <div class="toggle" id="shareStatsToggle"><div class="knob"></div></div>
+    </div>
+    <div class="field-row">
+      <label>Training goal</label>
+      <select id="goalFocusSelect" class="goal-focus-select">
+        <option value="muscle">Build muscle</option>
+        <option value="fatloss">Lose fat</option>
+        <option value="general">General fitness</option>
+      </select>
+    </div>
+    <div class="field-row">
+      <label>Light theme</label>
+      <div class="toggle" id="themeToggle"><div class="knob"></div></div>
+    </div>
+    <div class="field-row">
+      <label>Rest timer, seconds</label>
+      <input type="number" id="restInput" min="10" max="300" step="5">
+    </div>
+    <div class="field-row">
+      <label>Notify when rest ends</label>
+      <div class="toggle" id="notifyToggle"><div class="knob"></div></div>
+    </div>
+    <div class="field-row">
+      <label data-unit-label="goal">Weekly volume goal, kg</label>
+      <input type="number" id="goalInput" min="0" step="100">
+    </div>
+    <div class="field-row">
+      <label data-unit-label="handle">Dumbbell handle weight, kg</label>
+      <input type="number" id="handleInput" min="0" step="0.5">
+    </div>
+    <div class="field-row">
+      <label data-unit-label="increment">Progression increment, kg</label>
+      <input type="number" id="progressionInput" min="0.5" step="0.5">
+    </div>
+    <div class="field-row">
+      <label>App lock, passcode</label>
+      <div class="toggle" id="lockToggle"><div class="knob"></div></div>
+    </div>
+    <div class="passcode-setup" id="passcodeSetup">
+      <input type="password" inputmode="numeric" id="pin1" placeholder="New passcode" maxlength="8">
+      <input type="password" inputmode="numeric" id="pin2" placeholder="Confirm passcode" maxlength="8">
+      <button id="pinSave">Save Passcode</button>
+      <div class="passcode-hint">No recovery if forgotten. Turn the toggle off to remove the lock instead.</div>
+    </div>
+  </div>
+  <div class="settings-block">
+    <h3 class="section-h">Cloud Sync</h3>
+    <div class="sync-card">
+      <div class="sync-status" id="syncStatus">Not connected</div>
+      <div class="sync-form" id="syncForm">
+        <input type="url" id="syncUrl" placeholder="Supabase project URL">
+        <input type="text" id="syncAnonKey" placeholder="Anon public key">
+        <input type="email" id="syncEmail" placeholder="Email">
+        <input type="password" id="syncPassword" placeholder="Password">
+        <button class="sync-connect" id="syncConnect">Connect</button>
+      </div>
+      <button class="sync-setup-toggle" id="syncSetupToggle" type="button">First-time setup SQL</button>
+      <pre class="sync-setup" id="syncSetup">create table foundry_state (
+  user_id uuid primary key
+    references auth.users(id) on delete cascade,
+  data jsonb not null,
+  updated_at timestamptz not null default now()
+);
+alter table foundry_state enable row level security;
+create policy "own row" on foundry_state
+  for all using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
+
+create table foundry_leaderboard (
+  user_id uuid primary key
+    references auth.users(id) on delete cascade,
+  display_name text not null,
+  stats jsonb not null,
+  updated_at timestamptz not null default now()
+);
+alter table foundry_leaderboard enable row level security;
+create policy "read all" on foundry_leaderboard
+  for select to authenticated using (true);
+create policy "write own" on foundry_leaderboard
+  for insert to authenticated with check (auth.uid() = user_id);
+create policy "update own" on foundry_leaderboard
+  for update to authenticated using (auth.uid() = user_id);
+
+-- Friends sign up in the app. To hand-create users
+-- instead: Authentication &gt; Users.</pre>
+      <div class="sync-connected" id="syncConnected">
+        <div class="sync-email" id="syncEmailLabel"></div>
+        <div class="sync-actions">
+          <button id="syncNowBtn">Sync Now</button>
+          <button id="syncSignOutBtn">Sign Out</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="tools">
+    <button id="exportBtn">Export Backup</button>
+    <button id="importBtn">Import Backup</button>
+  </div>
+  <div class="tools" style="padding-top:0;">
+    <button id="exportCsvBtn">Export CSV</button>
+    <button id="exportCardioCsvBtn">Export Conditioning CSV</button>
+  </div>
+  <div class="tools" style="padding-top:0;">
+    <button id="exportMeasureCsvBtn">Export Measurements CSV</button>
+  </div>
+  <div class="settings-block danger-zone">
+    <h3 class="section-h">Danger Zone</h3>
+    <button class="danger-btn" id="resetAllBtn">Reset All Data</button>
+    <div class="danger-hint">Wipes every session, measurement, plan, and setting on this device<span id="resetCloudNote"></span>, then runs setup and the tour again. This cannot be undone.</div>
+  </div>
+  <input type="file" id="importFile" accept="application/json">
+</div>
+
+<div class="rest-bar" id="restBar">
+  <div>
+    <div class="label">Rest</div>
+    <div class="time num" id="restTime">60</div>
+  </div>
+  <button id="restSkip">Skip</button>
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="update-bar" id="updateBar">Update ready &middot; Tap to refresh</div>
+<canvas id="confettiCanvas"></canvas>
+
+<script src="config.js"></script>
+<script src="plans.js"></script>
+<script src="exercise-info.js"></script>
+<script src="storage.js"></script>
+<script src="charts.js"></script>
+<script src="app.js"></script>
+<script src="sync.js"></script>
+</body>
+</html>
