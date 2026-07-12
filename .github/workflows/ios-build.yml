@@ -37,4 +37,4 @@ jobs:
       - name: Build iOS app
         run: |
           cd ios/App
-          xcodebuild -workspace App.xcworkspace -scheme App -configuration Debug -sdk iphonesimulator build
+          xcodebuild -workspace App.xcworkspace -scheme App -configuration Debug -sdk iphonesimulator IPHONEOS_DEPLOYMENT_TARGET=15.0 build
