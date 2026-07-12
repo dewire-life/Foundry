@@ -1240,6 +1240,7 @@ function renderSettings(){
     }
     el.appendChild(div);
   });
+  refreshSupportBlock();
   renderProgramSettings();
   renderTrainingDayChips();
   document.getElementById('resetCloudNote').textContent =
@@ -2737,3 +2738,72 @@ async function resetAllData(){
   setTimeout(showOnboarding, 400);
 }
 document.getElementById('resetAllBtn').onclick = resetAllData;
+
+// ---------- Splash ----------
+
+// A brand moment on launch, never a gate: pointer-events stay off so the app
+// is tappable underneath from the first frame, and it removes itself from the
+// DOM when done.
+(function runSplash(){
+  const TAGLINES = [
+    'Forged, not found.',
+    'Stronger than yesterday.',
+    'The iron never lies.',
+    'Built rep by rep.',
+    'Show up. Get strong.',
+    'Heat. Pressure. Progress.',
+    'Strength is a habit.',
+    'Steel sharpens steel.',
+    'Your future self is training.',
+    'Slow fire, strong steel.',
+    'Hammer the work.',
+    'Progress loves patience.'
+  ];
+  const splash = document.getElementById('splash');
+  document.getElementById('splashTag').textContent = TAGLINES[Math.floor(Math.random() * TAGLINES.length)];
+  const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const hold = reduced ? 600 : 1400;
+  setTimeout(()=>{
+    splash.classList.add('hide');
+    setTimeout(()=> splash.remove(), 450);
+  }, hold);
+})();
+
+// ---------- Support button ----------
+// Three modes, one button. Inside the App Store build, a native shell exposes
+// window.FoundryIAP and the tap runs an Apple in-app purchase. On the open
+// web, the configured supportUrl opens instead. With neither, no tip jar.
+
+function iapBridge(){
+  return typeof window.FoundryIAP === 'function' ? window.FoundryIAP : null;
+}
+
+function refreshSupportBlock(){
+  const url = (typeof FOUNDRY_CONFIG !== 'undefined' && FOUNDRY_CONFIG.supportUrl) || '';
+  const btn = document.getElementById('coffeeBtn');
+  const block = document.getElementById('supportBlock');
+  if(iapBridge()){
+    block.style.display = 'block';
+    btn.removeAttribute('href');
+    btn.removeAttribute('target');
+    btn.onclick = (e)=>{
+      e.preventDefault();
+      try{ iapBridge()('coffee'); }catch(err){ showToast('Purchase could not start'); }
+    };
+  } else if(url){
+    block.style.display = 'block';
+    btn.href = url;
+    btn.target = '_blank';
+    btn.onclick = null;
+  } else {
+    block.style.display = 'none';
+  }
+}
+refreshSupportBlock();
+// Native shells may inject the bridge after page load; re-check when Settings renders.
+
+// The native shell calls this after StoreKit confirms the purchase.
+window.foundryCoffeeThanks = function(){
+  showToast('Coffee received. You legend.');
+  launchConfetti();
+};

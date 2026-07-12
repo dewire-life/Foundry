@@ -132,6 +132,11 @@
 <script src="chart.umd.min.js"></script>
 </head>
 <body>
+<div class="splash" id="splash">
+  <img class="splash-logo" src="icons/logo.png" alt="">
+  <div class="splash-word">FOUNDRY</div>
+  <div class="splash-tag" id="splashTag"></div>
+</div>
 
 <div class="lock-screen" id="lockScreen" style="display:none;">
   <h2>Foundry Locked</h2>
@@ -519,6 +524,11 @@ create policy "update own" on foundry_leaderboard
   </div>
   <div class="tools" style="padding-top:0;">
     <button id="exportMeasureCsvBtn">Export Measurements CSV</button>
+  </div>
+  <div class="settings-block" id="supportBlock" style="display:none;">
+    <h3 class="section-h">Support Foundry</h3>
+    <a class="coffee-btn" id="coffeeBtn" target="_blank" rel="noopener">Buy me a coffee</a>
+    <div class="danger-hint">Foundry is free, with no ads and nothing locked away. If it's earned a coffee, this is the tip jar.</div>
   </div>
   <div class="settings-block danger-zone">
     <h3 class="section-h">Danger Zone</h3>
