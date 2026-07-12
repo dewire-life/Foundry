@@ -1,5 +1,8 @@
 {
   "appId": "com.tomgarrett.foundry",
   "appName": "Foundry",
-  "webDir": "www"
+  "webDir": "www",
+  "ios": {
+    "minVersion": "15.0"
+  }
 }
