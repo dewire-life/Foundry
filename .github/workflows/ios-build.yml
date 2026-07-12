@@ -21,11 +21,13 @@ jobs:
       - name: Install iOS platform
         run: npx cap add ios
 
-      - name: Sync Capacitor
-        run: npx cap sync ios
+      - name: Set iOS deployment target
+        run: |
+          sed -i '' "s/platform :ios, '[0-9.]*'/platform :ios, '15.0'/" ios/App/Podfile
+          cat ios/App/Podfile
 
-      - name: Show Podfile for debugging
-        run: cat ios/App/Podfile
+      - name: Copy web assets
+        run: npx cap copy ios
 
       - name: Install CocoaPods dependencies
         run: |
