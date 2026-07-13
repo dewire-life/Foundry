@@ -94,3 +94,18 @@ jobs:
         with:
           name: Foundry-ipa
           path: ${{ runner.temp }}/export/*.ipa
+
+      - name: Upload to TestFlight
+        env:
+          APP_STORE_KEY_BASE64: ${{ secrets.APP_STORE_KEY_BASE64 }}
+          APP_STORE_KEY_ID: ${{ secrets.APP_STORE_KEY_ID }}
+          APP_STORE_ISSUER_ID: ${{ secrets.APP_STORE_ISSUER_ID }}
+        run: |
+          mkdir -p ~/private_keys
+          echo -n "$APP_STORE_KEY_BASE64" | base64 --decode -o ~/private_keys/AuthKey_$APP_STORE_KEY_ID.p8
+
+          xcrun altool --upload-app \
+            --type ios \
+            --file "$RUNNER_TEMP/export/App.ipa" \
+            --apiKey "$APP_STORE_KEY_ID" \
+            --apiIssuer "$APP_STORE_ISSUER_ID"
