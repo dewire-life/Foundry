@@ -74,9 +74,16 @@ jobs:
           <plist version="1.0">
           <dict>
               <key>method</key>
-              <string>app-store</string>
+              <string>app-store-connect</string>
               <key>teamID</key>
               <string>8SJ4UYTD9J</string>
+              <key>signingStyle</key>
+              <string>manual</string>
+              <key>provisioningProfiles</key>
+              <dict>
+                  <key>com.tomgarrett.foundry</key>
+                  <string>Foundry App Store Profile</string>
+              </dict>
           </dict>
           </plist>
           PLIST
