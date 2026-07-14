@@ -2,32 +2,42 @@
   --font-ui: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 
-  --bg:#000000;
-  --card:#1c1c1e;
-  --card-2:#2c2c2e;
-  --line:rgba(255,255,255,0.09);
+  --bg:#0a0a0c;
+  --card:#1a1a1d;
+  --card-2:#242427;
+  --line:rgba(255,255,255,0.08);
   --text:#ffffff;
-  --muted:#8e8e93;
+  --muted:#9a9a9f;
 
   --accent:#ff9f0a;      /* systemOrange, Move */
   --accent-dim:#7a4d08;
+  --accent-soft:#3d2a12;   /* pastel-dim orange for subtle fills, badges */
+  --accent-pastel:#5c3d18; /* warmer pastel tone for dark-mode highlight surfaces */
   --good:#30d158;        /* systemGreen, Exercise */
   --blue:#0a84ff;        /* systemBlue, Stand/streak */
   --red:#ff453a;         /* systemRed */
   --pink:#ff375f;        /* systemPink */
   --warn:#ffd60a;        /* systemYellow */
   --steel:#64d2ff;       /* systemTeal-ish, secondary info */
+
+  --radius-sm:10px;
+  --radius-md:14px;
+  --radius-lg:20px;
+  --btn-height:50px;
+  --transition:0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 body.light{
-  --bg:#f2f2f7;
+  --bg:#f7f3ee;
   --card:#ffffff;
-  --card-2:#f2f2f7;
-  --line:rgba(60,60,67,0.16);
+  --card-2:#fdf6ee;
+  --line:rgba(60,60,67,0.14);
   --text:#000000;
   --muted:#6d6d72;
 
   --accent:#ff9500;
   --accent-dim:#ffdcab;
+  --accent-soft:#fff0dc;
+  --accent-pastel:#ffe4c2;
   --good:#34c759;
   --blue:#007aff;
   --red:#ff3b30;
