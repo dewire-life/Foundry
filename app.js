@@ -63,7 +63,9 @@ function resetSessionTimer(){
 
 function renderTabs(){
   const el = document.getElementById('daytabs');
+  const pill = document.getElementById('daytabsPill');
   el.innerHTML = '';
+  if(pill) el.appendChild(pill);
   currentPlan().days.forEach((d, i)=>{
     const tab = document.createElement('div');
     tab.className = 'daytab' + (i===activeDay ? ' active':'');
@@ -71,6 +73,16 @@ function renderTabs(){
     tab.onclick = ()=>{ activeDay = i; state.lastDay = i; saveState(state); resetSessionTimer(); render(); };
     el.appendChild(tab);
   });
+  positionDaytabsPill();
+}
+
+function positionDaytabsPill(){
+  const el = document.getElementById('daytabs');
+  const pill = document.getElementById('daytabsPill');
+  const activeTab = el && el.querySelector('.daytab.active');
+  if(!el || !pill || !activeTab) return;
+  pill.style.width = activeTab.offsetWidth + 'px';
+  pill.style.transform = 'translateX(' + activeTab.offsetLeft + 'px)';
 }
 
 // Builds the tappable instructions panel for an exercise. Falls back to a plain
@@ -673,6 +685,7 @@ document.querySelectorAll('.viewtab').forEach(tab=>{
 function switchView(view){
   currentView = view;
   document.querySelectorAll('.viewtab').forEach(t => t.classList.toggle('active', t.dataset.view === view));
+  positionViewtabsPill();
   document.getElementById('logView').style.display = view==='log' ? 'block' : 'none';
   document.getElementById('cardioView').style.display = view==='cardio' ? 'block' : 'none';
   document.getElementById('progressView').style.display = view==='progress' ? 'block' : 'none';
@@ -684,6 +697,23 @@ function switchView(view){
   if(view === 'body') renderBody();
   if(view === 'settings') renderSettings();
 }
+
+function positionViewtabsPill(){
+  const el = document.getElementById('viewtabsControl');
+  const pill = document.getElementById('viewtabsPill');
+  const activeTab = el && el.querySelector('.viewtab.active');
+  if(!el || !pill || !activeTab) return;
+  pill.style.width = activeTab.offsetWidth + 'px';
+  pill.style.transform = 'translateX(' + activeTab.offsetLeft + 'px)';
+}
+
+window.addEventListener('resize', ()=>{
+  positionViewtabsPill();
+  positionDaytabsPill();
+});
+document.addEventListener('DOMContentLoaded', ()=>{
+  setTimeout(()=>{ positionViewtabsPill(); positionDaytabsPill(); }, 50);
+});
 
 // ---------- Cardio / Conditioning view ----------
 

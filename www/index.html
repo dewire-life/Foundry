@@ -169,7 +169,8 @@
 </header>
 
 <div class="viewtabs-bar">
-<div class="viewtabs">
+<div class="viewtabs" id="viewtabsControl">
+  <div class="seg-pill" id="viewtabsPill"></div>
   <div class="viewtab active" data-view="log">Log</div>
   <div class="viewtab" data-view="cardio">Cardio</div>
   <div class="viewtab" data-view="progress">Progress</div>
@@ -183,7 +184,7 @@
   <div class="program-strip" id="programStrip" style="display:none;">
     <span class="program-chip" id="programChip"></span>
   </div>
-  <div class="daytabs" id="daytabs"></div>
+  <div class="daytabs" id="daytabs"><div class="seg-pill" id="daytabsPill"></div></div>
   <div class="program-note" id="programNote" style="display:none;"></div>
   <button class="warmup-launch" id="warmupLaunchBtn">Guided Warm-Up &middot; <span id="warmupMins" class="num">4</span> min</button>
   <div class="session-timer" id="sessionTimer">

@@ -85,23 +85,23 @@ header .sub{color:var(--muted); font-size:14px; margin-top:2px; letter-spacing:0
   backdrop-filter:saturate(180%) blur(20px);
 }
 body.light .viewtabs-bar{background:rgba(242,242,247,0.8);}
-.viewtabs{display:flex; gap:2px; padding:2px; background:var(--card); border-radius:11px;}
+.viewtabs{position:relative; display:flex; gap:0; padding:2px; background:rgba(120,120,128,0.16); border-radius:9px; overflow:hidden; min-height:32px;}
 .viewtab{
-  flex:1; text-align:center; padding:8px 4px; border-radius:9px;
+  position:relative; z-index:1; flex:1; text-align:center; padding:7px 4px; border-radius:7px;
   background:transparent; border:none;
   color:var(--muted); font-size:13px; text-transform:none; letter-spacing:0;
-  font-weight:600; cursor:pointer; transition:background 0.2s, color 0.2s;
+  font-weight:500; cursor:pointer; transition:color 0.15s;
 }
-.viewtab.active{background:var(--card-2); color:var(--text); border-color:transparent;}
+.viewtab.active{color:var(--text); font-weight:600;}
 
-.daytabs{display:flex; gap:2px; margin:16px 20px 0; padding:2px; background:var(--card); border-radius:11px; flex-wrap:nowrap; overflow-x:auto;}
+.daytabs{position:relative; display:flex; gap:0; margin:16px 20px 0; padding:2px; background:rgba(120,120,128,0.16); border-radius:9px; flex-wrap:nowrap; overflow-x:auto; min-height:34px;}
 .daytab{
-  flex:1; min-width:60px; text-align:center; padding:9px 4px; border-radius:9px;
+  position:relative; z-index:1; flex:1; min-width:60px; text-align:center; padding:8px 4px; border-radius:7px;
   background:transparent; border:none;
   color:var(--muted); font-size:12px; text-transform:none; letter-spacing:0;
-  font-weight:600; cursor:pointer; transition:background 0.2s, color 0.2s;
+  font-weight:500; cursor:pointer; transition:color 0.15s;
 }
-.daytab.active{background:var(--card-2); color:var(--text); border-color:transparent;}
+.daytab.active{color:var(--text); font-weight:600;}
 
 main{padding:0 20px 18px;}
 .card{
@@ -861,10 +861,15 @@ select{
 
 /* Buttons press down softly */
 button{
-  transition:transform 0.12s ease, background 0.18s ease, color 0.18s ease,
-    border-color 0.18s ease, opacity 0.18s ease;
+  border-radius:var(--radius-md);
+  transition:transform 0.12s ease, background var(--transition), color var(--transition),
+    border-color var(--transition), opacity 0.18s ease, box-shadow var(--transition);
 }
 button:active{transform:scale(0.97);}
+select, .text-input, input[type="text"], input[type="number"], input[type="password"]{
+  border-radius:var(--radius-md);
+  transition:border-color var(--transition), box-shadow var(--transition);
+}
 .viewtab:active, .daytab:active{transform:scale(0.98);}
 
 /* Expanding panels ease in rather than snapping */
