@@ -182,10 +182,10 @@ select, .text-input{
   padding:10px; border-radius:12px; font-family:var(--font-ui); font-size:14px;
   margin-bottom:14px;
 }
-.chart-block{margin-bottom:22px; padding:0 18px;}
+.chart-block{margin:16px 0 22px; padding:0 18px;}
 .chart-block h3{font-size:13px; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin:0 0 8px;}
 .chart-wrap{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:12px 8px;}
-.stat-strip{display:flex; gap:10px; margin-bottom:14px; padding:0 18px;}
+.stat-strip{display:flex; gap:10px; margin:16px 0 14px; padding:0 18px;}
 .stat-strip div{flex:1; min-width:0; background:var(--card); border:1px solid var(--line); border-radius:14px; padding:10px 8px; text-align:center;}
 .stat-strip .v{font-family:var(--font-mono); font-size:16px; font-weight:700; color:var(--accent); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
 .stat-strip .l{font-size:9px; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px;}
