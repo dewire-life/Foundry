@@ -35,6 +35,10 @@ jobs:
           cd ios/App
           pod install
 
+      - name: Set export compliance flag
+        run: |
+          /usr/libexec/PlistBuddy -c "Add :ITSAppUsesNonExemptEncryption bool false" ios/App/App/Info.plist
+
       - name: Import signing certificate
         env:
           IOS_P12_BASE64: ${{ secrets.IOS_P12_BASE64 }}
