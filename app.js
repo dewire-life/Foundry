@@ -1268,21 +1268,48 @@ function renderSettings(){
   document.getElementById('goalInput').value = state.settings.weeklyGoal;
   document.getElementById('handleInput').value = state.settings.handleWeight;
   document.getElementById('progressionInput').value = state.settings.progressionIncrement;
-  document.getElementById('themeToggle').classList.toggle('on', state.settings.theme === 'light');
+  document.querySelectorAll('#themeSegControl .seg-btn').forEach(btn=>{
+    btn.classList.toggle('active', btn.dataset.theme === (state.settings.theme || 'system'));
+  });
   document.getElementById('notifyToggle').classList.toggle('on', !!state.settings.notifyRest);
   document.getElementById('lockToggle').classList.toggle('on', !!state.settings.passcodeEnabled);
 }
 
-document.getElementById('themeToggle').onclick = ()=>{
-  const isLight = state.settings.theme !== 'light';
-  state.settings.theme = isLight ? 'light' : 'dark';
-  document.body.classList.toggle('light', isLight);
-  document.getElementById('themeToggle').classList.toggle('on', isLight);
-  document.querySelector('meta[name="theme-color"]').setAttribute('content', isLight ? '#f2f2f7' : '#000000');
-  saveState(state);
-  if(currentView === 'progress') renderProgress();
-  if(currentView === 'body') renderBody();
-};
+function systemPrefersLight(){
+  return window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+}
+
+function isEffectivelyLight(themeSetting){
+  if(themeSetting === 'light') return true;
+  if(themeSetting === 'dark') return false;
+  return systemPrefersLight();
+}
+
+function applyTheme(){
+  const themeSetting = (state.settings && state.settings.theme) || 'system';
+  const light = isEffectivelyLight(themeSetting);
+  document.body.classList.toggle('light', light);
+  document.querySelector('meta[name="theme-color"]').setAttribute('content', light ? '#f2f2f7' : '#000000');
+  document.querySelectorAll('#themeSegControl .seg-btn').forEach(btn=>{
+    btn.classList.toggle('active', btn.dataset.theme === themeSetting);
+  });
+}
+
+document.querySelectorAll('#themeSegControl .seg-btn').forEach(btn=>{
+  btn.onclick = ()=>{
+    state.settings.theme = btn.dataset.theme;
+    applyTheme();
+    saveState(state);
+    if(currentView === 'progress') renderProgress();
+    if(currentView === 'body') renderBody();
+  };
+});
+
+if(window.matchMedia){
+  window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', ()=>{
+    if((state.settings && state.settings.theme) === 'system') applyTheme();
+  });
+}
 document.getElementById('notifyToggle').onclick = async ()=>{
   const turningOn = !state.settings.notifyRest;
   if(turningOn && 'Notification' in window){
@@ -1422,7 +1449,7 @@ document.getElementById('importFile').onchange = (e)=>{
       state = Object.assign(defaultState(), data);
       state.settings = Object.assign(defaultState().settings, data.settings || {});
       state.sessions = (data.sessions || []).map(migrateSession);
-      document.body.classList.toggle('light', state.settings.theme === 'light');
+      applyTheme();
       saveState(state);
       render();
       showToast('Backup restored');
@@ -1671,10 +1698,7 @@ function initApp(){
     });
     if(!busy) openRecap(true);
   }, 1200);
-  if(state.settings.theme === 'light'){
-    document.body.classList.add('light');
-    document.querySelector('meta[name="theme-color"]').setAttribute('content', '#f2f2f7');
-  }
+  applyTheme();
   updateStreak(state);
   renderHeaderQuote();
   render();
@@ -2728,8 +2752,8 @@ async function resetAllData(){
   }
 
   // Back to visual defaults, then straight into setup.
-  document.body.classList.remove('light');
-  document.querySelector('meta[name="theme-color"]').setAttribute('content', '#000000');
+  state.settings.theme = 'system';
+  applyTheme();
   activeDay = 0;
   friendsCache = { at: 0, rows: null };
   render();
