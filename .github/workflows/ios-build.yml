@@ -21,11 +21,11 @@ jobs:
       - name: Install iOS platform
         run: npx cap add ios || true
 
-      - name: Set iOS deployment target
+      - name: Debug - list iOS project structure
         run: |
-          sed -i '' "s/platform :ios, '[0-9.]*'/platform :ios, '15.0'/" ios/App/Podfile
-          sed -i '' "s/post_install do |installer|/post_install do |installer|\n  installer.pods_project.targets.each do |target|\n    target.build_configurations.each do |config|\n      config.build_settings['CODE_SIGNING_ALLOWED'] = 'NO'\n      config.build_settings['CODE_SIGNING_REQUIRED'] = 'NO'\n    end\n  end/" ios/App/Podfile
-          cat ios/App/Podfile
+          find ios -maxdepth 3 -type f | head -50
+          echo "---"
+          find ios -maxdepth 3 -type d
 
       - name: Copy web assets
         run: npx cap copy ios
