@@ -10,7 +10,7 @@
   window.FoundryNotify = {
     isNative: isNative,
 
-    async requestPermission(){
+    async requestPermission(){\n      if(window.debugLog) window.debugLog('requestPermission called, isNative=' + isNative);
       if(isNative){
         if(!window.Capacitor.Plugins || !window.Capacitor.Plugins.LocalNotifications){
           console.error('FoundryNotify: LocalNotifications plugin not found on window.Capacitor.Plugins');
@@ -33,7 +33,7 @@
       return false;
     },
 
-    async checkPermission(){
+    async checkPermission(){\n      if(window.debugLog) window.debugLog('checkPermission called');
       if(isNative && window.Capacitor.Plugins && window.Capacitor.Plugins.LocalNotifications){
         try{
           var result = await window.Capacitor.Plugins.LocalNotifications.checkPermissions();
@@ -52,7 +52,7 @@
       }
     },
 
-    async scheduleAt(id, title, body, whenDate){
+    async scheduleAt(id, title, body, whenDate){\n      if(window.debugLog) window.debugLog('scheduleAt called: id=' + id + ' whenDate=' + whenDate);
       if(isNative && window.Capacitor.Plugins && window.Capacitor.Plugins.LocalNotifications){
         try{
           await window.Capacitor.Plugins.LocalNotifications.schedule({
@@ -62,7 +62,7 @@
       }
     },
 
-    async cancel(id){
+    async cancel(id){\n      if(window.debugLog) window.debugLog('cancel called: id=' + id);
       if(isNative && window.Capacitor.Plugins && window.Capacitor.Plugins.LocalNotifications){
         try{
           await window.Capacitor.Plugins.LocalNotifications.cancel({ notifications: [{ id: id }] });
