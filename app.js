@@ -1552,7 +1552,6 @@ function tickRestTimer(){
   restEndsAt = null;
   bar.classList.remove('show');
   beep();
-  if(window.FoundryNotify) window.FoundryNotify.cancel(REST_NOTIF_ID);
 }
 
 const REST_NOTIF_ID = 424242;
