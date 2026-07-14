@@ -1358,14 +1358,18 @@ if(window.matchMedia){
 }
 document.getElementById('notifyToggle').onclick = async ()=>{
   const turningOn = !state.settings.notifyRest;
-  if(turningOn && 'Notification' in window){
-    const perm = await Notification.requestPermission();
-    if(perm !== 'granted'){ showToast('Notification permission denied'); return; }
+  if(turningOn && window.FoundryNotify){
+    const granted = await window.FoundryNotify.requestPermission();
+    if(!granted){ showToast('Notification permission denied'); return; }
   }
   state.settings.notifyRest = turningOn;
   document.getElementById('notifyToggle').classList.toggle('on', turningOn);
   saveState(state);
-  if(turningOn) showToast('Note: alerts only fire while the app is open');
+  if(turningOn){
+    showToast(window.FoundryNotify && window.FoundryNotify.isNative
+      ? 'Rest alerts enabled'
+      : 'Note: alerts only fire while the app is open');
+  }
 };
 document.getElementById('restInput').onchange = (e)=>{
   state.settings.restSeconds = parseInt(e.target.value) || 60;
@@ -1542,8 +1546,8 @@ function tickRestTimer(){
   restEndsAt = null;
   bar.classList.remove('show');
   beep();
-  if(state.settings.notifyRest && 'Notification' in window && Notification.permission === 'granted'){
-    try{ new Notification('Rest over', { body: 'Time for your next set.' }); }catch(e){}
+  if(state.settings.notifyRest && window.FoundryNotify){
+    window.FoundryNotify.fireNow('Rest over', 'Time for your next set.');
   }
 }
 
