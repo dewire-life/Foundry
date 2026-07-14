@@ -1358,17 +1358,21 @@ if(window.matchMedia){
 }
 document.getElementById('notifyToggle').onclick = async ()=>{
   const turningOn = !state.settings.notifyRest;
+  if(window.debugLog) window.debugLog('toggle clicked, turningOn=' + turningOn);
   if(turningOn && window.FoundryNotify){
     const status = await window.FoundryNotify.checkPermission();
+    if(window.debugLog) window.debugLog('checkPermission returned: ' + status);
     if(status === 'denied'){
       showToast('Notifications are off in iOS Settings. Opening Settings\u2026');
       window.FoundryNotify.openSettings();
       return;
     }
     const granted = await window.FoundryNotify.requestPermission();
+    if(window.debugLog) window.debugLog('requestPermission returned: ' + granted);
     if(!granted){ showToast('Notification permission denied'); return; }
   }
   state.settings.notifyRest = turningOn;
+  if(window.debugLog) window.debugLog('state.settings.notifyRest set to: ' + state.settings.notifyRest);
   document.getElementById('notifyToggle').classList.toggle('on', turningOn);
   saveState(state);
   if(turningOn){
@@ -1562,6 +1566,7 @@ function startRestTimer(){
   document.getElementById('restBar').classList.add('show');
   document.getElementById('restTime').textContent = state.settings.restSeconds || 60;
   restInterval = setInterval(tickRestTimer, 250);
+  if(window.debugLog) window.debugLog('startRestTimer: notifyRest=' + state.settings.notifyRest + ' FoundryNotify=' + !!window.FoundryNotify);
   if(state.settings.notifyRest && window.FoundryNotify){
     window.FoundryNotify.scheduleAt(REST_NOTIF_ID, 'Rest over', 'Time for your next set.', new Date(restEndsAt));
   }
