@@ -21,6 +21,9 @@ jobs:
       - name: Install iOS platform
         run: npx cap add ios || true
 
+      - name: Generate iOS app icons
+        run: npx capacitor-assets generate --iconBackgroundColor '#000000' --iconBackgroundColorDark '#000000' --ios
+
       - name: Copy web assets
         run: npx cap copy ios
 
