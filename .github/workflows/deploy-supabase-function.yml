@@ -11,10 +11,10 @@ jobs:
 
       - name: Install Supabase CLI
         run: |
-          rm -f supabase supabase.tar.gz
-          curl -fsSL https://github.com/supabase/cli/releases/latest/download/supabase_linux_amd64.tar.gz -o supabase.tar.gz
-          tar -xzf supabase.tar.gz
-          sudo mv -f supabase /usr/local/bin/supabase
+          mkdir -p $RUNNER_TEMP/supabase-cli
+          curl -fsSL https://github.com/supabase/cli/releases/latest/download/supabase_linux_amd64.tar.gz -o $RUNNER_TEMP/supabase-cli/supabase.tar.gz
+          tar -xzf $RUNNER_TEMP/supabase-cli/supabase.tar.gz -C $RUNNER_TEMP/supabase-cli
+          sudo mv -f $RUNNER_TEMP/supabase-cli/supabase /usr/local/bin/supabase
           supabase --version
 
       - name: Deploy delete-account function
