@@ -1271,6 +1271,7 @@ function renderSettings(){
   document.querySelectorAll('#themeSegControl .seg-btn').forEach(btn=>{
     btn.classList.toggle('active', btn.dataset.theme === (state.settings.theme || 'system'));
   });
+  positionSegPill();
   document.getElementById('notifyToggle').classList.toggle('on', !!state.settings.notifyRest);
   document.getElementById('lockToggle').classList.toggle('on', !!state.settings.passcodeEnabled);
 }
@@ -1290,10 +1291,25 @@ function applyTheme(){
   const light = isEffectivelyLight(themeSetting);
   document.body.classList.toggle('light', light);
   document.querySelector('meta[name="theme-color"]').setAttribute('content', light ? '#f2f2f7' : '#000000');
-  document.querySelectorAll('#themeSegControl .seg-btn').forEach(btn=>{
+  const segButtons = document.querySelectorAll('#themeSegControl .seg-btn');
+  segButtons.forEach(btn=>{
     btn.classList.toggle('active', btn.dataset.theme === themeSetting);
   });
+  positionSegPill();
 }
+
+function positionSegPill(){
+  const control = document.getElementById('themeSegControl');
+  const pill = document.getElementById('themeSegPill');
+  const activeBtn = control && control.querySelector('.seg-btn.active');
+  if(!control || !pill || !activeBtn) return;
+  pill.style.width = activeBtn.offsetWidth + 'px';
+  pill.style.transform = 'translateX(' + activeBtn.offsetLeft + 'px)';
+}
+
+window.addEventListener('resize', ()=>{
+  if(document.getElementById('themeSegControl')) positionSegPill();
+});
 
 document.querySelectorAll('#themeSegControl .seg-btn').forEach(btn=>{
   btn.onclick = ()=>{
