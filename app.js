@@ -2781,21 +2781,25 @@ function iapBridge(){
 
 function refreshSupportBlock(){
   const url = (typeof FOUNDRY_CONFIG !== 'undefined' && FOUNDRY_CONFIG.supportUrl) || '';
-  const btn = document.getElementById('coffeeBtn');
   const block = document.getElementById('supportBlock');
+  const tiers = document.getElementById('tipTiers');
+  const webLink = document.getElementById('coffeeBtn');
   if(iapBridge()){
     block.style.display = 'block';
-    btn.removeAttribute('href');
-    btn.removeAttribute('target');
-    btn.onclick = (e)=>{
-      e.preventDefault();
-      try{ iapBridge()('coffee'); }catch(err){ showToast('Purchase could not start'); }
-    };
+    tiers.style.display = 'grid';
+    webLink.style.display = 'none';
+    tiers.querySelectorAll('.tip-btn').forEach(btn => {
+      btn.onclick = ()=>{
+        try{ iapBridge()(btn.dataset.size); }
+        catch(err){ showToast('Purchase could not start'); }
+      };
+    });
   } else if(url){
     block.style.display = 'block';
-    btn.href = url;
-    btn.target = '_blank';
-    btn.onclick = null;
+    tiers.style.display = 'none';
+    webLink.style.display = 'block';
+    webLink.href = url;
+    webLink.target = '_blank';
   } else {
     block.style.display = 'none';
   }
@@ -2803,9 +2807,13 @@ function refreshSupportBlock(){
 refreshSupportBlock();
 // Native shells may inject the bridge after page load; re-check when Settings renders.
 
-// The native shell calls this after StoreKit confirms the purchase.
-window.foundryCoffeeThanks = function(){
-  showToast('Coffee received. You legend.');
+// The native shell calls this after StoreKit confirms the purchase. It may
+// pass the size ('small'|'medium'|'large'); the message adapts if it does.
+window.foundryCoffeeThanks = function(size){
+  const msg = size === 'large' ? 'Lunch sorted. You absolute legend.'
+    : size === 'medium' ? 'Coffee and a snack. You legend.'
+    : 'Coffee received. You legend.';
+  showToast(msg);
   launchConfetti();
 };
 

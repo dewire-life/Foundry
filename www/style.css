@@ -1029,6 +1029,17 @@ button:active{transform:scale(0.97);}
   .splash-logo, .splash-word, .splash-tag{animation:none;}
 }
 
+.tip-tiers{display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:10px;}
+.tip-btn{
+  display:flex; flex-direction:column; align-items:center; gap:3px;
+  background:var(--card); border:1px solid var(--line); color:var(--text);
+  border-radius:14px; padding:12px 4px; cursor:pointer; font-family:var(--font-ui);
+}
+.tip-btn:active{transform:scale(0.97);}
+.tip-emoji{font-size:22px; line-height:1;}
+.tip-label{font-size:10px; color:var(--muted); text-align:center; line-height:1.2; min-height:24px; display:flex; align-items:center;}
+.tip-price{font-size:13px; font-weight:800; color:var(--accent);}
+
 /* Coffee button */
 .coffee-btn{
   display:block; text-align:center; text-decoration:none;
