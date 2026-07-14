@@ -11,9 +11,20 @@
     isNative: isNative,
 
     async requestPermission(){
-      if(isNative && window.Capacitor.Plugins && window.Capacitor.Plugins.LocalNotifications){
-        var result = await window.Capacitor.Plugins.LocalNotifications.requestPermissions();
-        return result.display === 'granted';
+      if(isNative){
+        if(!window.Capacitor.Plugins || !window.Capacitor.Plugins.LocalNotifications){
+          console.error('FoundryNotify: LocalNotifications plugin not found on window.Capacitor.Plugins');
+          if(typeof window.showToast === 'function') window.showToast('Notifications plugin not available');
+          return false;
+        }
+        try{
+          var result = await window.Capacitor.Plugins.LocalNotifications.requestPermissions();
+          return result.display === 'granted';
+        }catch(err){
+          console.error('FoundryNotify: requestPermissions failed', err);
+          if(typeof window.showToast === 'function') window.showToast('Could not request notification permission');
+          return false;
+        }
       }
       if('Notification' in window){
         var perm = await Notification.requestPermission();
@@ -33,7 +44,7 @@
               schedule: { at: new Date(Date.now() + 100) }
             }]
           });
-        }catch(e){ /* silent fail, non-critical */ }
+        }catch(e){ console.error('FoundryNotify: schedule failed', e); }
         return;
       }
       if('Notification' in window && Notification.permission === 'granted'){
