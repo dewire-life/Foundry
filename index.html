@@ -531,16 +531,6 @@ create policy "update own" on foundry_leaderboard
   <div class="tools" style="padding-top:0;">
     <button id="exportMeasureCsvBtn">Export Measurements CSV</button>
   </div>
-  <div class="settings-block" id="supportBlock" style="display:none;">
-    <h3 class="section-h">Support Foundry</h3>
-    <div class="tip-tiers" id="tipTiers">
-      <button class="tip-btn" data-size="small"><span class="tip-emoji">☕</span><span class="tip-label">Coffee</span><span class="tip-price">£0.99</span></button>
-      <button class="tip-btn" data-size="medium"><span class="tip-emoji">🥐</span><span class="tip-label">Coffee &amp; snack</span><span class="tip-price">£2.99</span></button>
-      <button class="tip-btn" data-size="large"><span class="tip-emoji">🍽️</span><span class="tip-label">Lunch</span><span class="tip-price">£4.99</span></button>
-    </div>
-    <a class="coffee-btn" id="coffeeBtn" target="_blank" rel="noopener" style="display:none;">Buy me a coffee</a>
-    <div class="danger-hint">Foundry is free, with no ads and nothing locked away. If it's earned a tip, this is the jar.</div>
-  </div>
   <div class="settings-block danger-zone">
     <h3 class="section-h">Danger Zone</h3>
     <button class="danger-btn" id="resetAllBtn">Reset All Data</button>
@@ -571,7 +561,6 @@ create policy "update own" on foundry_leaderboard
 <script src="app.js"></script>
 <script src="sync.js"></script>
 <script src="debug-log.js"></script>
-    <script src="iap-bridge.js"></script>
     <script src="notify-bridge.js"></script>
 </body>
 </html>
