@@ -33,6 +33,43 @@
       return false;
     },
 
+    async checkPermission(){
+      if(isNative && window.Capacitor.Plugins && window.Capacitor.Plugins.LocalNotifications){
+        try{
+          var result = await window.Capacitor.Plugins.LocalNotifications.checkPermissions();
+          return result.display; // 'granted' | 'denied' | 'prompt' | 'prompt-with-rationale'
+        }catch(e){ return 'prompt'; }
+      }
+      if('Notification' in window) return Notification.permission === 'granted' ? 'granted' : 'denied';
+      return 'prompt';
+    },
+
+    async openSettings(){
+      if(isNative && window.Capacitor.Plugins && window.Capacitor.Plugins.NativeSettings){
+        try{
+          await window.Capacitor.Plugins.NativeSettings.open({ optionIOS: 'app', optionAndroid: 'application_details' });
+        }catch(e){ console.error('FoundryNotify: openSettings failed', e); }
+      }
+    },
+
+    async scheduleAt(id, title, body, whenDate){
+      if(isNative && window.Capacitor.Plugins && window.Capacitor.Plugins.LocalNotifications){
+        try{
+          await window.Capacitor.Plugins.LocalNotifications.schedule({
+            notifications: [{ title: title, body: body, id: id, schedule: { at: whenDate } }]
+          });
+        }catch(e){ console.error('FoundryNotify: scheduleAt failed', e); }
+      }
+    },
+
+    async cancel(id){
+      if(isNative && window.Capacitor.Plugins && window.Capacitor.Plugins.LocalNotifications){
+        try{
+          await window.Capacitor.Plugins.LocalNotifications.cancel({ notifications: [{ id: id }] });
+        }catch(e){ /* fine if nothing was scheduled */ }
+      }
+    },
+
     async fireNow(title, body){
       if(isNative && window.Capacitor.Plugins && window.Capacitor.Plugins.LocalNotifications){
         try{

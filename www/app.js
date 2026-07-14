@@ -1359,6 +1359,12 @@ if(window.matchMedia){
 document.getElementById('notifyToggle').onclick = async ()=>{
   const turningOn = !state.settings.notifyRest;
   if(turningOn && window.FoundryNotify){
+    const status = await window.FoundryNotify.checkPermission();
+    if(status === 'denied'){
+      showToast('Notifications are off in iOS Settings. Opening Settings\u2026');
+      window.FoundryNotify.openSettings();
+      return;
+    }
     const granted = await window.FoundryNotify.requestPermission();
     if(!granted){ showToast('Notification permission denied'); return; }
   }
@@ -1546,10 +1552,10 @@ function tickRestTimer(){
   restEndsAt = null;
   bar.classList.remove('show');
   beep();
-  if(state.settings.notifyRest && window.FoundryNotify){
-    window.FoundryNotify.fireNow('Rest over', 'Time for your next set.');
-  }
+  if(window.FoundryNotify) window.FoundryNotify.cancel(REST_NOTIF_ID);
 }
+
+const REST_NOTIF_ID = 424242;
 
 function startRestTimer(){
   clearInterval(restInterval);
@@ -1557,6 +1563,9 @@ function startRestTimer(){
   document.getElementById('restBar').classList.add('show');
   document.getElementById('restTime').textContent = state.settings.restSeconds || 60;
   restInterval = setInterval(tickRestTimer, 250);
+  if(state.settings.notifyRest && window.FoundryNotify){
+    window.FoundryNotify.scheduleAt(REST_NOTIF_ID, 'Rest over', 'Time for your next set.', new Date(restEndsAt));
+  }
 }
 
 // Catch up instantly when the app wakes from background.
@@ -1569,6 +1578,7 @@ document.getElementById('restSkip').onclick = ()=>{
   clearInterval(restInterval);
   restEndsAt = null;
   document.getElementById('restBar').classList.remove('show');
+  if(window.FoundryNotify) window.FoundryNotify.cancel(REST_NOTIF_ID);
 };
 
 function launchConfetti(){
@@ -2409,6 +2419,16 @@ document.getElementById('obFinish').onclick = ()=>{
   localStorage.setItem(ONBOARD_KEY, '1');
   document.getElementById('onboardOverlay').classList.remove('show');
   resetSessionTimer();
+
+  // Ask for notification permission right after onboarding, while the person
+  // is already in a setup mindset. If granted, turn the rest-alert setting on
+  // by default; if declined, leave it off, they can enable it later from Settings.
+  if(window.FoundryNotify){
+    window.FoundryNotify.requestPermission().then(granted=>{
+      state.settings.notifyRest = granted;
+      saveState(state);
+    });
+  }
   render();
   renderHeaderQuote();
   if(!localStorage.getItem(TOUR_KEY)) setTimeout(openTour, 250);
