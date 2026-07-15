@@ -818,6 +818,20 @@ button:focus:not(:focus-visible), input:focus:not(:focus-visible), select:focus:
 
 /* Friends board */
 .friends-wrap{padding:0 18px; margin-bottom:22px;}
+.friend-connect{
+  background:var(--card); border:1px solid var(--line); border-radius:var(--radius-md);
+  padding:12px; margin-bottom:12px; display:flex; flex-direction:column; gap:10px;
+}
+.friend-code-row{display:flex; align-items:center; gap:8px;}
+.friend-code-label{font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em; font-weight:700;}
+.friend-code-value{font-family:var(--font-mono); font-size:18px; font-weight:800; color:var(--accent); letter-spacing:0.08em; flex:1;}
+.friend-add-row{display:flex; gap:8px;}
+.friend-add-row input{
+  flex:1; background:var(--card-2); border:1px solid var(--line); color:var(--text);
+  border-radius:var(--radius-md); padding:9px 12px; font-family:var(--font-mono); font-size:14px;
+  text-transform:uppercase; letter-spacing:0.05em; box-sizing:border-box;
+}
+.friend-code-row button, .friend-add-row button{white-space:nowrap; flex-shrink:0;}
 .friend-row{
   display:flex; align-items:baseline; gap:10px; padding:9px 12px;
   background:var(--card); border:1px solid var(--line); border-radius:12px; margin-bottom:6px;

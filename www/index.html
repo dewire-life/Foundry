@@ -257,6 +257,17 @@
 
   <div class="friends-wrap" id="friendsWrap" style="display:none;">
     <h3 class="section-h">Friends This Week</h3>
+    <div class="friend-connect">
+      <div class="friend-code-row">
+        <span class="friend-code-label">Your code</span>
+        <span class="friend-code-value" id="myInviteCode">------</span>
+        <button class="row-tools-solo" id="shareInviteBtn" type="button" style="margin-bottom:0;">Share</button>
+      </div>
+      <div class="friend-add-row">
+        <input type="text" id="friendCodeInput" placeholder="Enter a friend's code" maxlength="6" autocapitalize="characters" autocorrect="off">
+        <button class="row-tools-solo" id="addFriendBtn" type="button" style="margin-bottom:0;">Add</button>
+      </div>
+    </div>
     <div id="friendsBoard"></div>
   </div>
 

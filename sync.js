@@ -234,6 +234,46 @@ async function fetchLeaderboard(){
   return supabaseRest(cfg, 'foundry_leaderboard?select=user_id,display_name,stats,updated_at', { method: 'GET' });
 }
 
+// Friend connections: a short shareable code per person, redeemed by an
+// actual friend to link accounts. The RLS policy on foundry_leaderboard is
+// what actually restricts who sees whose stats, this just manages the codes.
+function generateInviteCode(){
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // no 0/O or 1/I, easy to read aloud
+  let code = '';
+  for(let i=0;i<6;i++) code += chars[Math.floor(Math.random()*chars.length)];
+  return code;
+}
+
+async function getOrCreateInviteCode(){
+  if(!syncEnabled()) return null;
+  const cfg = loadSyncCfg();
+  const existing = await supabaseRest(cfg, 'foundry_invite_codes?select=code', { method: 'GET' });
+  if(existing && existing.length) return existing[0].code;
+  for(let attempt=0; attempt<5; attempt++){
+    const code = generateInviteCode();
+    try{
+      await supabaseRest(cfg, 'foundry_invite_codes', {
+        method: 'POST',
+        headers: { 'Prefer': 'return=minimal' },
+        body: JSON.stringify({ user_id: cfg.session.user_id, code })
+      });
+      return code;
+    }catch(e){
+      if(!/duplicate|unique/i.test(e.message)) throw e;
+    }
+  }
+  throw new Error('Could not generate an invite code, try again');
+}
+
+async function redeemInviteCode(code){
+  if(!syncEnabled()) return { error: 'Sign in to add friends' };
+  const cfg = loadSyncCfg();
+  return supabaseRest(cfg, 'rpc/redeem_invite_code', {
+    method: 'POST',
+    body: JSON.stringify({ invite_code: code.trim().toUpperCase() })
+  });
+}
+
 // Pull the cloud row and adopt it if it is newer than local state.
 async function pullStateFromCloud(){
   if(!syncEnabled() || !navigator.onLine) return;

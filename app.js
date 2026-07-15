@@ -2296,11 +2296,20 @@ document.getElementById('recoverySave').onclick = async ()=>{
 // ---------- Friends leaderboard ----------
 
 let friendsCache = { at: 0, rows: null };
+let myInviteCodeCache = null;
 
 async function renderFriendsBoard(){
   const wrap = document.getElementById('friendsWrap');
   if(typeof syncEnabled !== 'function' || !syncEnabled()){ wrap.style.display = 'none'; return; }
   wrap.style.display = 'block';
+
+  if(!myInviteCodeCache){
+    try{
+      myInviteCodeCache = await getOrCreateInviteCode();
+      document.getElementById('myInviteCode').textContent = myInviteCodeCache || '------';
+    }catch(e){ /* non-critical, leave placeholder */ }
+  }
+
   const board = document.getElementById('friendsBoard');
   if(!friendsCache.rows) board.innerHTML = '<div class="friends-empty">Loading the board...</div>';
   try{
@@ -2316,7 +2325,7 @@ async function renderFriendsBoard(){
   }
   const rows = friendsCache.rows || [];
   if(rows.length === 0){
-    board.innerHTML = '<div class="friends-empty">Nobody on the board yet. Turn on "Share stats with friends" in Settings and log a session.</div>';
+    board.innerHTML = '<div class="friends-empty">No friends connected yet. Share your code above, or enter a friend\'s code to link up.</div>';
     return;
   }
   const myId = (loadSyncCfg().session || {}).user_id;
@@ -2344,6 +2353,36 @@ document.getElementById('displayNameInput').onchange = (e)=>{
   state.settings.displayName = e.target.value.trim().slice(0, 24);
   saveState(state);
 };
+document.getElementById('shareInviteBtn').onclick = async ()=>{
+  if(!myInviteCodeCache){
+    try{ myInviteCodeCache = await getOrCreateInviteCode(); document.getElementById('myInviteCode').textContent = myInviteCodeCache; }
+    catch(e){ showToast('Could not get your code, try again'); return; }
+  }
+  const text = `Add me on Foundry! Enter my code in the Friends section: ${myInviteCodeCache}`;
+  if(navigator.share){
+    try{ await navigator.share({ text }); }catch(e){ /* user cancelled, fine */ }
+  } else {
+    try{
+      await navigator.clipboard.writeText(myInviteCodeCache);
+      showToast('Code copied to clipboard');
+    }catch(e){ showToast(`Your code: ${myInviteCodeCache}`); }
+  }
+};
+
+document.getElementById('addFriendBtn').onclick = async ()=>{
+  const input = document.getElementById('friendCodeInput');
+  const code = input.value.trim();
+  if(!code){ showToast('Enter a code first'); return; }
+  try{
+    const result = await redeemInviteCode(code);
+    if(result && result.error){ showToast(result.error); return; }
+    input.value = '';
+    friendsCache.at = 0;
+    showToast('Friend added!');
+    renderFriendsBoard();
+  }catch(e){ showToast('Could not add friend, check the code and try again'); }
+};
+
 document.getElementById('shareStatsToggle').onclick = ()=>{
   state.settings.shareStats = !state.settings.shareStats;
   document.getElementById('shareStatsToggle').classList.toggle('on', state.settings.shareStats);
