@@ -2165,6 +2165,8 @@ function guidedAdvance(rest){
   else renderGuidedSet();
 }
 
+const GUIDED_REST_NOTIF_ID = 424243;
+
 function renderGuidedRest(){
   const secs = state.settings.restSeconds || 60;
   const endsAt = Date.now() + secs * 1000;
@@ -2189,7 +2191,14 @@ function renderGuidedRest(){
     if(remaining > 0) el.textContent = remaining;
     else finishRest();
   }, 250);
-  document.getElementById('gRestSkip').onclick = finishRest;
+  document.getElementById('gRestSkip').onclick = ()=>{
+    if(window.FoundryNotify) window.FoundryNotify.cancel(GUIDED_REST_NOTIF_ID);
+    finishRest();
+  };
+  if(window.debugLog) window.debugLog('renderGuidedRest: notifyRest=' + state.settings.notifyRest + ' FoundryNotify=' + !!window.FoundryNotify);
+  if(state.settings.notifyRest && window.FoundryNotify){
+    window.FoundryNotify.scheduleAt(GUIDED_REST_NOTIF_ID, 'Rest over', 'Time for your next set.', new Date(endsAt));
+  }
 }
 
 document.getElementById('guidedStartBtn').onclick = startGuided;
