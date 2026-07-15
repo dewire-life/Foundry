@@ -253,7 +253,7 @@ async function pullStateFromCloud(){
       state.settings = Object.assign(defaultState().settings, (remote.data.settings) || {});
       state.sessions = (remote.data.sessions || []).map(migrateSession);
       localStorage.setItem(STORE_KEY, JSON.stringify(state));
-      document.body.classList.toggle('light', state.settings.theme === 'light');
+      if(typeof applyTheme === 'function') applyTheme();
       updateStreak(state);
       render();
       if(currentView === 'progress') renderProgress();

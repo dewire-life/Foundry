@@ -1559,6 +1559,22 @@ function tickRestTimer(){
 
 const REST_NOTIF_ID = 424242;
 
+// Requests notification permission once per device, regardless of whether the
+// person is a brand-new local user (via onboarding) or signing into an
+// existing account (which skips onboarding entirely). Idempotent: safe to
+// call from multiple entry points, only ever actually prompts once.
+function maybePromptNotifications(){
+  if(localStorage.getItem('foundryNotifPrompted')) return;
+  localStorage.setItem('foundryNotifPrompted', '1');
+  if(window.FoundryNotify){
+    window.FoundryNotify.requestPermission().then(granted=>{
+      state.settings.notifyRest = granted;
+      saveState(state);
+      if(currentView === 'settings') renderSettings();
+    });
+  }
+}
+
 function startRestTimer(){
   clearInterval(restInterval);
   restEndsAt = Date.now() + (state.settings.restSeconds || 60) * 1000;
@@ -2233,6 +2249,7 @@ async function welcomeAuth(mode){
     await pullStateFromCloud();
     render();
     if(mode === 'signup') showOnboarding();
+    maybePromptNotifications();
   }catch(e){
     welcomeMsg(e.message);
   }
@@ -2244,6 +2261,7 @@ document.getElementById('wSkip').onclick = ()=>{
   localStorage.setItem(WELCOME_KEY, '1');
   document.getElementById('welcomeOverlay').classList.remove('show');
   showOnboarding();
+  maybePromptNotifications();
 };
 document.getElementById('wForgot').onclick = async ()=>{
   const email = document.getElementById('wEmail').value.trim();
@@ -2424,15 +2442,7 @@ document.getElementById('obFinish').onclick = ()=>{
   document.getElementById('onboardOverlay').classList.remove('show');
   resetSessionTimer();
 
-  // Ask for notification permission right after onboarding, while the person
-  // is already in a setup mindset. If granted, turn the rest-alert setting on
-  // by default; if declined, leave it off, they can enable it later from Settings.
-  if(window.FoundryNotify){
-    window.FoundryNotify.requestPermission().then(granted=>{
-      state.settings.notifyRest = granted;
-      saveState(state);
-    });
-  }
+  maybePromptNotifications();
   render();
   renderHeaderQuote();
   if(!localStorage.getItem(TOUR_KEY)) setTimeout(openTour, 250);
