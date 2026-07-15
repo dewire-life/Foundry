@@ -2296,6 +2296,8 @@ document.getElementById('recoverySave').onclick = async ()=>{
 
 let friendsCache = { at: 0, rows: null };
 let myInviteCodeCache = null;
+let challengeMetric = 'weekVolume';
+const escHtml = (s) => String(s).replace(/</g,'&lt;').replace(/>/g,'&gt;');
 
 async function renderFriendsBoard(){
   const connectBox = document.getElementById('friendConnectBox');
@@ -2334,7 +2336,6 @@ async function renderFriendsBoard(){
   }
   const myId = (loadSyncCfg().session || {}).user_id;
   rows.sort((a,b) => (b.stats.weekVolume || 0) - (a.stats.weekVolume || 0));
-  const escHtml = (s) => String(s).replace(/</g,'&lt;').replace(/>/g,'&gt;');
   board.innerHTML = rows.map((r, i) => `
     <div class="friend-row ${r.user_id === myId ? 'me' : ''}">
       <span class="f-rank num">${i + 1}</span>
@@ -2357,9 +2358,10 @@ document.getElementById('displayNameInput').onchange = (e)=>{
   state.settings.displayName = e.target.value.trim().slice(0, 24);
   saveState(state);
 };
-document.getElementById('friendsIconBtn').onclick = ()=>{
+document.getElementById('friendsIconBtn').onclick = async ()=>{
   document.getElementById('friendsOverlay').classList.add('show');
-  renderFriendsBoard();
+  await renderFriendsBoard();
+  renderChallenges();
 };
 document.getElementById('friendsClose').onclick = ()=>{
   document.getElementById('friendsOverlay').classList.remove('show');
@@ -2393,6 +2395,110 @@ document.getElementById('addFriendBtn').onclick = async ()=>{
     showToast('Friend added!');
     renderFriendsBoard();
   }catch(e){ showToast('Could not add friend, check the code and try again'); }
+};
+
+async function renderChallenges(){
+  const el = document.getElementById('challengesList');
+  el.innerHTML = '<div class="friends-empty">Loading challenges...</div>';
+  try{
+    const challenges = await fetchChallenges();
+    if(!challenges.length){ el.innerHTML = '<div class="friends-empty">No challenges yet. Create one above.</div>'; return; }
+    const myId = (loadSyncCfg().session || {}).user_id;
+    const cards = await Promise.all(challenges.map(async ch=>{
+      const memberIds = await fetchChallengeMemberIds(ch.id);
+      const rows = (friendsCache.rows || []).filter(r => memberIds.includes(r.user_id));
+      rows.sort((a,b) => (b.stats[ch.metric] || 0) - (a.stats[ch.metric] || 0));
+      const metricLabel = ch.metric === 'weekVolume' ? 'Volume' : 'Sessions';
+      const rowsHtml = rows.map((r,i)=>`
+        <div class="challenge-standing-row ${r.user_id === myId ? 'me' : ''}">
+          <span>${i+1}. ${escHtml(r.display_name || 'Anon')}</span>
+          <span class="num">${ch.metric === 'weekVolume' ? Math.round(r.stats.weekVolume||0) + (r.stats.units||'kg') : (r.stats.weekSessions||0)}</span>
+        </div>
+      `).join('');
+      return `
+        <div class="challenge-card">
+          <div class="challenge-card-head">
+            <div>
+              <div class="challenge-card-name">${escHtml(ch.name)}</div>
+              <div class="challenge-card-metric">${metricLabel} this week</div>
+            </div>
+            <button class="challenge-leave-btn" data-challenge="${ch.id}">Leave</button>
+          </div>
+          ${rowsHtml || '<div class="friends-empty">No one has shared stats yet.</div>'}
+        </div>
+      `;
+    }));
+    el.innerHTML = cards.join('');
+    el.querySelectorAll('.challenge-leave-btn').forEach(btn=>{
+      btn.onclick = async ()=>{
+        if(!confirm('Leave this challenge?')) return;
+        try{ await leaveChallenge(btn.dataset.challenge); renderChallenges(); }
+        catch(e){ showToast('Could not leave challenge'); }
+      };
+    });
+  }catch(e){
+    el.innerHTML = /relation|does not exist|schema cache|404|PGRST205/i.test(e.message)
+      ? '<div class="friends-empty">Challenges aren\'t set up in Supabase yet.</div>'
+      : '<div class="friends-empty">Could not load challenges right now.</div>';
+  }
+}
+
+function positionChallengeMetricPill(){
+  const control = document.getElementById('challengeMetricSeg');
+  const pill = document.getElementById('challengeMetricPill');
+  const activeBtn = control && control.querySelector('.seg-btn.active');
+  if(!control || !pill || !activeBtn) return;
+  pill.style.width = activeBtn.offsetWidth + 'px';
+  pill.style.transform = 'translateX(' + activeBtn.offsetLeft + 'px)';
+}
+
+document.querySelectorAll('#challengeMetricSeg .seg-btn').forEach(btn=>{
+  btn.onclick = ()=>{
+    document.querySelectorAll('#challengeMetricSeg .seg-btn').forEach(b=>b.classList.toggle('active', b===btn));
+    challengeMetric = btn.dataset.metric;
+    positionChallengeMetricPill();
+  };
+});
+
+function populateChallengeFriendPicker(){
+  const el = document.getElementById('challengeFriendPicker');
+  const myId = (loadSyncCfg().session || {}).user_id;
+  const friends = (friendsCache.rows || []).filter(r => r.user_id !== myId);
+  if(!friends.length){
+    el.innerHTML = '<div class="friends-empty">Connect with friends first to start a challenge.</div>';
+    return;
+  }
+  el.innerHTML = friends.map(f => `
+    <label class="challenge-friend-chip">
+      <input type="checkbox" value="${f.user_id}">
+      ${escHtml(f.display_name || 'Anon')}
+    </label>
+  `).join('');
+}
+
+document.getElementById('newChallengeBtn').onclick = ()=>{
+  const form = document.getElementById('challengeForm');
+  const opening = form.style.display !== 'flex';
+  form.style.display = opening ? 'flex' : 'none';
+  if(opening){
+    populateChallengeFriendPicker();
+    setTimeout(positionChallengeMetricPill, 20);
+  }
+};
+
+document.getElementById('challengeCreateBtn').onclick = async ()=>{
+  const name = document.getElementById('challengeName').value.trim();
+  if(!name){ showToast('Give your challenge a name'); return; }
+  const friendIds = [...document.querySelectorAll('#challengeFriendPicker input:checked')].map(cb => cb.value);
+  if(!friendIds.length){ showToast('Pick at least one friend'); return; }
+  try{
+    const result = await createChallenge(name, challengeMetric, friendIds);
+    if(result && result.error){ showToast(result.error); return; }
+    document.getElementById('challengeForm').style.display = 'none';
+    document.getElementById('challengeName').value = '';
+    showToast('Challenge created!');
+    renderChallenges();
+  }catch(e){ showToast('Could not create challenge'); }
 };
 
 document.getElementById('shareStatsToggle').onclick = ()=>{

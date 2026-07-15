@@ -145,6 +145,20 @@
   </div>
   <h3 class="section-h" style="margin-top:18px;">This Week</h3>
   <div id="friendsBoard"></div>
+
+  <h3 class="section-h" style="margin-top:22px;">Challenges</h3>
+  <button class="row-tools-solo" id="newChallengeBtn" type="button" style="width:100%;">+ New Challenge</button>
+  <div class="challenge-form" id="challengeForm" style="display:none;">
+    <input type="text" id="challengeName" placeholder="Challenge name" maxlength="30">
+    <div class="seg-control" id="challengeMetricSeg">
+      <div class="seg-pill" id="challengeMetricPill"></div>
+      <button type="button" class="seg-btn active" data-metric="weekVolume">Volume</button>
+      <button type="button" class="seg-btn" data-metric="weekSessions">Sessions</button>
+    </div>
+    <div id="challengeFriendPicker"></div>
+    <button class="finish" id="challengeCreateBtn" style="margin-top:0;">Create Challenge</button>
+  </div>
+  <div id="challengesList"></div>
 </div>
 
 <script src="chart.umd.min.js"></script>

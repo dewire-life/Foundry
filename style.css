@@ -845,6 +845,27 @@ button:focus:not(:focus-visible), input:focus:not(:focus-visible), select:focus:
   text-transform:uppercase; letter-spacing:0.05em; box-sizing:border-box;
 }
 .friend-code-row button, .friend-add-row button{white-space:nowrap; flex-shrink:0;}
+.challenge-form{
+  background:var(--card); border:1px solid var(--line); border-radius:var(--radius-md);
+  padding:12px; margin:10px 0; display:flex; flex-direction:column; gap:10px;
+}
+.challenge-form input[type="text"]{
+  background:var(--card-2); border:1px solid var(--line); color:var(--text);
+  border-radius:var(--radius-md); padding:10px 12px; font-family:var(--font-ui); font-size:14px; box-sizing:border-box;
+}
+.challenge-friend-chip{display:flex; align-items:center; gap:8px; padding:8px 4px; cursor:pointer; font-size:13px;}
+.challenge-friend-chip input[type="checkbox"]{width:18px; height:18px; flex-shrink:0;}
+.challenge-card{
+  background:var(--card); border:1px solid var(--line); border-radius:var(--radius-md);
+  padding:12px; margin-bottom:10px;
+}
+.challenge-card-head{display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;}
+.challenge-card-name{font-size:15px; font-weight:700;}
+.challenge-card-metric{font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; margin-top:2px;}
+.challenge-standing-row{display:flex; justify-content:space-between; padding:5px 0; font-size:13px; border-bottom:1px solid var(--line);}
+.challenge-standing-row:last-child{border-bottom:none;}
+.challenge-standing-row.me{color:var(--accent); font-weight:700;}
+.challenge-leave-btn{font-size:11px; color:var(--muted); background:none; border:none; cursor:pointer; text-decoration:underline; flex-shrink:0;}
 .friend-row{
   display:flex; align-items:baseline; gap:10px; padding:9px 12px;
   background:var(--card); border:1px solid var(--line); border-radius:12px; margin-bottom:6px;

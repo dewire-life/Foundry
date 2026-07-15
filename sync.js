@@ -274,6 +274,38 @@ async function redeemInviteCode(code){
   });
 }
 
+// Challenges: a named group of connected friends competing on a weekly
+// metric already tracked by the leaderboard, no separate stats system.
+async function fetchChallenges(){
+  if(!syncEnabled()) return [];
+  const cfg = loadSyncCfg();
+  const myId = cfg.session.user_id;
+  const memberships = await supabaseRest(cfg, `foundry_challenge_members?user_id=eq.${myId}&select=challenge_id`, { method: 'GET' });
+  if(!memberships || !memberships.length) return [];
+  const ids = memberships.map(m => m.challenge_id).join(',');
+  return supabaseRest(cfg, `foundry_challenges?id=in.(${ids})&select=id,name,metric,creator_id`, { method: 'GET' });
+}
+
+async function fetchChallengeMemberIds(challengeId){
+  const cfg = loadSyncCfg();
+  const rows = await supabaseRest(cfg, `foundry_challenge_members?challenge_id=eq.${challengeId}&select=user_id`, { method: 'GET' });
+  return (rows || []).map(r => r.user_id);
+}
+
+async function createChallenge(name, metric, friendIds){
+  const cfg = loadSyncCfg();
+  return supabaseRest(cfg, 'rpc/create_challenge', {
+    method: 'POST',
+    body: JSON.stringify({ challenge_name: name, challenge_metric: metric, friend_ids: friendIds })
+  });
+}
+
+async function leaveChallenge(challengeId){
+  const cfg = loadSyncCfg();
+  const myId = cfg.session.user_id;
+  return supabaseRest(cfg, `foundry_challenge_members?challenge_id=eq.${challengeId}&user_id=eq.${myId}`, { method: 'DELETE' });
+}
+
 // Pull the cloud row and adopt it if it is newer than local state.
 async function pullStateFromCloud(){
   if(!syncEnabled() || !navigator.onLine) return;
