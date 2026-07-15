@@ -59,7 +59,7 @@
       if(isNative && window.Capacitor.Plugins && window.Capacitor.Plugins.LocalNotifications){
         try{
           await window.Capacitor.Plugins.LocalNotifications.schedule({
-            notifications: [{ title: title, body: body, id: id, schedule: { at: whenDate } }]
+            notifications: [{ title: title, body: body, id: id, schedule: { at: whenDate }, sound: 'rest-over.wav' }]
           });
         }catch(e){ console.error('FoundryNotify: scheduleAt failed', e); }
       }
