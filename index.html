@@ -129,6 +129,24 @@
   </div>
 </div>
 
+<div class="page-overlay" id="friendsOverlay">
+  <button class="guided-close" id="friendsClose" aria-label="Close Friends">&times;</button>
+  <h2 class="friends-page-title">Friends</h2>
+  <div class="friend-connect" id="friendConnectBox">
+    <div class="friend-code-row">
+      <span class="friend-code-label">Your code</span>
+      <span class="friend-code-value" id="myInviteCode">------</span>
+      <button class="row-tools-solo" id="shareInviteBtn" type="button" style="margin-bottom:0;">Share</button>
+    </div>
+    <div class="friend-add-row">
+      <input type="text" id="friendCodeInput" placeholder="Enter a friend's code" maxlength="6" autocapitalize="characters" autocorrect="off">
+      <button class="row-tools-solo" id="addFriendBtn" type="button" style="margin-bottom:0;">Add</button>
+    </div>
+  </div>
+  <h3 class="section-h" style="margin-top:18px;">This Week</h3>
+  <div id="friendsBoard"></div>
+</div>
+
 <script src="chart.umd.min.js"></script>
 </head>
 <body>
@@ -166,6 +184,7 @@
   </div>
 
   <div class="header-quote" id="headerQuote"></div>
+  <button class="friends-icon-btn" id="friendsIconBtn" type="button" aria-label="Friends">&#128101;</button>
 </header>
 
 <div class="viewtabs-bar">
@@ -253,22 +272,6 @@
 
   <div class="recap-btn-wrap">
     <button class="row-tools-solo" id="recapOpenBtn" style="width:100%;">Last Week's Recap</button>
-  </div>
-
-  <div class="friends-wrap" id="friendsWrap" style="display:none;">
-    <h3 class="section-h">Friends This Week</h3>
-    <div class="friend-connect">
-      <div class="friend-code-row">
-        <span class="friend-code-label">Your code</span>
-        <span class="friend-code-value" id="myInviteCode">------</span>
-        <button class="row-tools-solo" id="shareInviteBtn" type="button" style="margin-bottom:0;">Share</button>
-      </div>
-      <div class="friend-add-row">
-        <input type="text" id="friendCodeInput" placeholder="Enter a friend's code" maxlength="6" autocapitalize="characters" autocorrect="off">
-        <button class="row-tools-solo" id="addFriendBtn" type="button" style="margin-bottom:0;">Add</button>
-      </div>
-    </div>
-    <div id="friendsBoard"></div>
   </div>
 
   <div class="chart-block">

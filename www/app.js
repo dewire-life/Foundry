@@ -806,7 +806,6 @@ function renderProgress(){
   renderDeloadBanner();
   renderProgressStats();
   renderInsights();
-  renderFriendsBoard();
   renderWeekSummary();
   renderCardioSummary();
   renderGoalBar();
@@ -2299,9 +2298,14 @@ let friendsCache = { at: 0, rows: null };
 let myInviteCodeCache = null;
 
 async function renderFriendsBoard(){
-  const wrap = document.getElementById('friendsWrap');
-  if(typeof syncEnabled !== 'function' || !syncEnabled()){ wrap.style.display = 'none'; return; }
-  wrap.style.display = 'block';
+  const connectBox = document.getElementById('friendConnectBox');
+  const boardEl = document.getElementById('friendsBoard');
+  if(typeof syncEnabled !== 'function' || !syncEnabled()){
+    connectBox.style.display = 'none';
+    boardEl.innerHTML = '<div class="friends-empty">Sign in and turn on cloud sync to connect with friends.</div>';
+    return;
+  }
+  connectBox.style.display = 'flex';
 
   if(!myInviteCodeCache){
     try{
@@ -2353,6 +2357,14 @@ document.getElementById('displayNameInput').onchange = (e)=>{
   state.settings.displayName = e.target.value.trim().slice(0, 24);
   saveState(state);
 };
+document.getElementById('friendsIconBtn').onclick = ()=>{
+  document.getElementById('friendsOverlay').classList.add('show');
+  renderFriendsBoard();
+};
+document.getElementById('friendsClose').onclick = ()=>{
+  document.getElementById('friendsOverlay').classList.remove('show');
+};
+
 document.getElementById('shareInviteBtn').onclick = async ()=>{
   if(!myInviteCodeCache){
     try{ myInviteCodeCache = await getOrCreateInviteCode(); document.getElementById('myInviteCode').textContent = myInviteCodeCache; }
@@ -2853,7 +2865,7 @@ async function resetAllData(){
   document.getElementById('restBar').classList.remove('show');
   if(typeof guided !== 'undefined' && guided) stopGuided(false);
   if(typeof warmup !== 'undefined' && warmup) stopWarmup();
-  ['summaryOverlay','recapOverlay','guidedOverlay','warmupOverlay','tourOverlay'].forEach(id => {
+  ['summaryOverlay','recapOverlay','guidedOverlay','warmupOverlay','tourOverlay','friendsOverlay'].forEach(id => {
     const el = document.getElementById(id);
     if(el) el.classList.remove('show');
   });

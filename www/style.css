@@ -57,8 +57,14 @@ body{
 .num{font-family:var(--font-mono);}
 
 header{
+  position:relative;
   padding:calc(20px + env(safe-area-inset-top)) 20px 8px;
   background:var(--bg);
+}
+.friends-icon-btn{
+  position:absolute; top:calc(20px + env(safe-area-inset-top)); right:20px;
+  width:36px; height:36px; border-radius:50%; background:var(--card); border:1px solid var(--line);
+  font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; line-height:1;
 }
 header h1{ margin:0; font-size:28px; letter-spacing:-0.02em; text-transform:none; font-weight:700; }
 header .sub{color:var(--muted); font-size:14px; margin-top:2px; letter-spacing:0; font-weight:500;}
@@ -714,6 +720,13 @@ button:focus:not(:focus-visible), input:focus:not(:focus-visible), select:focus:
   flex-direction:column;
 }
 .guided-overlay.show{display:flex;}
+.page-overlay{
+  position:fixed; inset:0; background:var(--bg); z-index:60; display:none;
+  padding:calc(20px + env(safe-area-inset-top)) 20px calc(24px + env(safe-area-inset-bottom));
+  overflow-y:auto;
+}
+.page-overlay.show{display:block;}
+.friends-page-title{font-size:26px; font-weight:800; letter-spacing:-0.02em; margin:36px 0 16px;}
 .guided-close{
   position:absolute; top:calc(14px + env(safe-area-inset-top)); right:16px;
   width:36px; height:36px; border-radius:50%; background:var(--card); border:1px solid var(--line);
