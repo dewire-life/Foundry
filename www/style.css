@@ -1051,9 +1051,3 @@ select, .text-input, input[type="text"], input[type="number"], input[type="passw
   .splash-logo, .splash-word, .splash-tag{animation:none;}
 }
 
-/* Coffee button */
-.coffee-btn{
-  display:block; text-align:center; text-decoration:none;
-  background:var(--accent); color:#ffffff; border-radius:14px;
-  padding:13px; font-size:14px; font-weight:800; font-family:var(--font-ui);
-}

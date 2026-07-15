@@ -74,23 +74,5 @@
       }
     },
 
-    async fireNow(title, body){
-      if(isNative && window.Capacitor.Plugins && window.Capacitor.Plugins.LocalNotifications){
-        try{
-          await window.Capacitor.Plugins.LocalNotifications.schedule({
-            notifications: [{
-              title: title,
-              body: body,
-              id: Math.floor(Math.random() * 100000),
-              schedule: { at: new Date(Date.now() + 100) }
-            }]
-          });
-        }catch(e){ console.error('FoundryNotify: schedule failed', e); }
-        return;
-      }
-      if('Notification' in window && Notification.permission === 'granted'){
-        try{ new Notification(title, { body: body }); }catch(e){}
-      }
-    }
   };
 })();

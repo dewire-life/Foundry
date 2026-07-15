@@ -1627,7 +1627,7 @@ function launchConfetti(){
 // home-screen app, which has no address bar and no way to hard-refresh: when a
 // new version is waiting, we surface a tap-to-refresh bar instead of silently
 // serving the old build until the next cold launch.
-if('serviceWorker' in navigator){
+if('serviceWorker' in navigator && !(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform())){
   let swRegistration = null;
 
   function showUpdateBanner(worker){
@@ -2294,13 +2294,14 @@ async function renderFriendsBoard(){
   }
   const myId = (loadSyncCfg().session || {}).user_id;
   rows.sort((a,b) => (b.stats.weekVolume || 0) - (a.stats.weekVolume || 0));
+  const escHtml = (s) => String(s).replace(/</g,'&lt;').replace(/>/g,'&gt;');
   board.innerHTML = rows.map((r, i) => `
     <div class="friend-row ${r.user_id === myId ? 'me' : ''}">
       <span class="f-rank num">${i + 1}</span>
-      <span class="f-name">${(r.display_name || 'Anon').replace(/</g,'&lt;')}${r.user_id === myId ? ' <span class="f-you">you</span>' : ''}</span>
-      <span class="f-streak num">${r.stats.streak || 0}d</span>
-      <span class="f-sessions num">${r.stats.weekSessions || 0} ses</span>
-      <span class="f-vol num">${Math.round(r.stats.weekVolume || 0)}${r.stats.units || 'kg'}</span>
+      <span class="f-name">${escHtml(r.display_name || 'Anon')}${r.user_id === myId ? ' <span class="f-you">you</span>' : ''}</span>
+      <span class="f-streak num">${Number(r.stats.streak) || 0}d</span>
+      <span class="f-sessions num">${Number(r.stats.weekSessions) || 0} ses</span>
+      <span class="f-vol num">${Math.round(Number(r.stats.weekVolume) || 0)}${escHtml(r.stats.units || 'kg')}</span>
     </div>
   `).join('');
 }
@@ -2638,6 +2639,8 @@ const TOUR_SLIDES = [
     text: 'Set a display name and turn on sharing in Settings to join the weekly friends board. Only summary stats are shared, never your workout details.' },
   { title: 'Make it yours',
     text: 'Settings has plans and a custom plan builder, program blocks with automatic deload weeks, kg or lb, goals, and cloud sync so your data follows you everywhere.' },
+  { title: 'No subscriptions, ever',
+    text: 'Foundry is a one-off purchase. No recurring fees, no paywalls, no surprise renewals. Any future premium features will be one-off purchases too, never a subscription.' },
 ];
 let tourIdx = 0;
 
@@ -2866,12 +2869,6 @@ document.getElementById('resetAllBtn').onclick = resetAllData;
     setTimeout(()=> splash.remove(), 450);
   }, hold);
 })();
-
-// ---------- Support button ----------
-// Three modes, one button. Inside the App Store build, a native shell exposes
-// window.FoundryIAP and the tap runs an Apple in-app purchase. On the open
-// web, the configured supportUrl opens instead. With neither, no tip jar.
-
 
 // ---------- Account deletion ----------
 
