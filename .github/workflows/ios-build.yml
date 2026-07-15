@@ -76,7 +76,7 @@ jobs:
       - name: Build and archive iOS app
         run: |
           cd ios/App
-          xcodebuild -workspace App.xcworkspace -scheme App -configuration Release -sdk iphoneos IPHONEOS_DEPLOYMENT_TARGET=15.0 archive -archivePath $RUNNER_TEMP/App.xcarchive CODE_SIGN_STYLE=Manual DEVELOPMENT_TEAM=8SJ4UYTD9J PROVISIONING_PROFILE_SPECIFIER="Foundry App Store Profile" CODE_SIGN_IDENTITY="Apple Distribution" CURRENT_PROJECT_VERSION=${{ github.run_number }}
+          xcodebuild -project App.xcodeproj -scheme App -configuration Release -sdk iphoneos IPHONEOS_DEPLOYMENT_TARGET=15.0 archive -archivePath $RUNNER_TEMP/App.xcarchive CODE_SIGN_STYLE=Manual DEVELOPMENT_TEAM=8SJ4UYTD9J PROVISIONING_PROFILE_SPECIFIER="Foundry App Store Profile" CODE_SIGN_IDENTITY="Apple Distribution" CURRENT_PROJECT_VERSION=${{ github.run_number }}
 
       - name: Export .ipa
         run: |
