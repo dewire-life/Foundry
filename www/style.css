@@ -183,7 +183,6 @@ select, .text-input{
   margin-bottom:14px;
 }
 .chart-block{margin:16px 0 22px; padding:0 18px;}
-.chart-block h3{font-size:13px; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin:0 0 8px;}
 .chart-wrap{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:12px 8px;}
 .stat-strip{display:flex; gap:10px; margin:16px 0 14px; padding:0 18px;}
 .stat-strip div{flex:1; min-width:0; background:var(--card); border:1px solid var(--line); border-radius:14px; padding:10px 8px; text-align:center;}
@@ -197,7 +196,7 @@ select, .text-input{
 
 .bw-form{display:flex; gap:8px; padding:0 18px; margin-bottom:14px;}
 .bw-form input{flex:1; background:var(--card); border:1px solid var(--line); color:var(--text); border-radius:12px; padding:9px; font-family:var(--font-mono);}
-.bw-form button{background:var(--accent); color:#ffffff; border:none; border-radius:12px; padding:9px 14px; font-family:var(--font-ui); font-weight:700; text-transform:none; font-size:12px; cursor:pointer;}
+.bw-form button{background:var(--accent); color:#ffffff; border:none; border-radius:var(--radius-md); padding:9px 14px; font-family:var(--font-ui); font-weight:700; text-transform:none; font-size:12px; cursor:pointer;}
 
 .cardio-row{display:flex; gap:8px; margin-bottom:10px;}
 .cardio-row input{
@@ -244,7 +243,7 @@ select, .text-input{
 .toggle.on .knob{left:21px; background:#ffffff;}
 
 .tools{display:flex; gap:10px; padding:18px;}
-.tools button{flex:1; padding:10px; background:var(--card); border:1px solid var(--line); color:var(--muted); border-radius:12px; font-family:var(--font-ui); font-size:12px; text-transform:none; letter-spacing:0; cursor:pointer;}
+.tools button{flex:1; padding:10px; background:var(--card); border:1px solid var(--line); color:var(--muted); border-radius:10px; font-family:var(--font-ui); font-size:12px; text-transform:none; letter-spacing:0; cursor:pointer;}
 input[type=file]{display:none;}
 .toast{
   position:fixed; bottom:calc(20px + env(safe-area-inset-bottom)); left:50%; transform:translateX(-50%);
@@ -261,7 +260,7 @@ input[type=file]{display:none;}
 .rest-bar.show{display:flex;}
 .rest-bar .label{font-size:12px; text-transform:uppercase; letter-spacing:1px; color:var(--muted);}
 .rest-bar .time{font-family:var(--font-mono); font-size:26px; color:var(--accent); font-weight:700;}
-.rest-bar button{background:var(--card); border:1px solid var(--line); color:var(--muted); border-radius:12px; padding:8px 12px; font-size:12px; text-transform:none; cursor:pointer;}
+.rest-bar button{background:var(--card); border:1px solid var(--line); color:var(--muted); border-radius:10px; padding:8px 12px; font-size:12px; text-transform:none; cursor:pointer;}
 
 /* Muscle recovery */
 .recovery-list{padding:0 18px; margin-bottom:22px;}
@@ -285,7 +284,7 @@ input[type=file]{display:none;}
 .cal-cell.today{border-color:var(--good); border-width:2px;}
 .cal-cell.empty{background:none; border:none;}
 .cal-nav{display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;}
-.cal-nav button{background:var(--card); border:1px solid var(--line); color:var(--text); border-radius:12px; padding:6px 12px; cursor:pointer;}
+.cal-nav button{background:var(--card); border:1px solid var(--line); color:var(--text); border-radius:10px; padding:6px 12px; cursor:pointer;}
 .cal-nav .label{font-size:13px; text-transform:uppercase; letter-spacing:1px;}
 
 /* Badges */
@@ -318,7 +317,7 @@ input[type=file]{display:none;}
 .st-target{font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px;}
 .session-timer button{
   background:var(--card-2); border:1px solid var(--line); color:var(--text);
-  border-radius:12px; padding:9px 16px; font-family:var(--font-ui); font-weight:600;
+  border-radius:10px; padding:9px 16px; font-family:var(--font-ui); font-weight:600;
   text-transform:none; font-size:12px; letter-spacing:0; cursor:pointer;
 }
 .session-timer button.running{background:var(--accent); color:#ffffff; border-color:var(--accent);}
@@ -401,7 +400,7 @@ input[type=file]{display:none;}
   border-radius:12px; padding:9px; font-family:var(--font-ui); font-size:13px; margin-bottom:8px;
 }
 .custom-form button{
-  width:100%; background:var(--accent); color:#ffffff; border:none; border-radius:12px;
+  width:100%; background:var(--accent); color:#ffffff; border:none; border-radius:var(--radius-md);
   padding:10px; font-family:var(--font-ui); font-weight:700; text-transform:none;
   font-size:12px; cursor:pointer;
 }
@@ -461,7 +460,7 @@ input[type=file]{display:none;}
   border-radius:12px; padding:9px; font-family:var(--font-mono); margin-bottom:8px;
 }
 .passcode-setup button{
-  width:100%; background:var(--accent); color:#ffffff; border:none; border-radius:12px;
+  width:100%; background:var(--accent); color:#ffffff; border:none; border-radius:var(--radius-md);
   padding:10px; font-family:var(--font-ui); font-weight:700; text-transform:none;
   font-size:12px; cursor:pointer;
 }
@@ -651,7 +650,7 @@ body.light .measure-date{color-scheme:light;}
 .sync-actions{display:flex; gap:8px;}
 .sync-actions button{
   flex:1; background:var(--card-2); border:1px solid var(--line); color:var(--text);
-  border-radius:12px; padding:10px; font-size:12px; font-weight:600; cursor:pointer; font-family:var(--font-ui);
+  border-radius:10px; padding:10px; font-size:12px; font-weight:600; cursor:pointer; font-family:var(--font-ui);
 }
 
 /* History panel */
@@ -735,7 +734,7 @@ button:focus:not(:focus-visible), input:focus:not(:focus-visible), select:focus:
 }
 .g-field select{font-size:16px; padding:17px 6px;}
 .g-log{
-  background:var(--accent); color:#fff; border:none; border-radius:16px;
+  background:var(--accent); color:#fff; border:none; border-radius:var(--radius-md);
   padding:16px; font-size:16px; font-weight:800; cursor:pointer; font-family:var(--font-ui);
   min-height:54px;
 }
